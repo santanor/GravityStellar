@@ -37,12 +37,13 @@ namespace Models
         /// </summary>
         void SpawnDotRoutine()
         {
-            //When the ticker gets to 0, Spawn the Dot and restart it 
+            //When the ticker gets to 0, Spawn the Dot and restart it
             if (_spawnTicker <= 0)
             {
                 _spawnTicker  = Random.Range(MinSpawnRate, MaxSpawnRate);
                 var d = Instantiate(DotPrefab, transform);
                 d.ParentStar = this;
+                d.InitialOrbitKick();
                 Dots.Add(d);
             }
 

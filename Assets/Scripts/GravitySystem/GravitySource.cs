@@ -11,4 +11,10 @@ public class GravitySource : MonoBehaviour
     {
         OnGravityPulse?.Invoke(transform.position, PullForce);
     }
+
+
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(transform.position, 0.3f);
+    }
 }

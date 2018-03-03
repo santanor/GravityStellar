@@ -14,18 +14,13 @@ namespace GravitySystem
 
         public IList<GravitySource> GravitySources;
 
-
-        void Awake()
-        {
-            GravitySources = new List<GravitySource>();
-        }
-
         /// <summary>
         /// Used to add a new gravity source to the list. It'll fire an event to notify everyone
         /// </summary>
         /// <param name="gs"></param>
         public void AddGravitySource( GravitySource gs )
         {
+            if (GravitySources == null) GravitySources =  new List<GravitySource>();
             GravitySources.Add(gs);
             OnNewGravitySource?.Invoke(gs);
         }

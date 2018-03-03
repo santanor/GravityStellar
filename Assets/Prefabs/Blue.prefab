@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4465769351759380}
   - component: {fileID: 212170510485794372}
-  - component: {fileID: 114596669687333276}
   - component: {fileID: 114587810096806630}
   m_Layer: 0
   m_Name: Blue
@@ -37,7 +36,7 @@ Transform:
   m_GameObject: {fileID: 1391042706693410}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.83, y: -0.13, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,24 +52,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9332819a3ac54b45afa00c874eda4c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PullForce: 1
   GravitySystem: {fileID: 11400000, guid: a4565f78ce2411142b407c40b4e6375c, type: 2}
-  MinSpawnRate: 0
-  MaxSpawnRate: 0
-  GravitySource: {fileID: 0}
+  MinSpawnRate: 2
+  MaxSpawnRate: 1.5
   DotPrefab: {fileID: 114367208074325098, guid: fea82505ca2a11949a0063a409ceb1fa,
     type: 2}
---- !u!114 &114596669687333276
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1391042706693410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef6a945494084f34db23250b409a7235, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PullForce: 1
 --- !u!212 &212170510485794372
 SpriteRenderer:
   m_ObjectHideFlags: 1
