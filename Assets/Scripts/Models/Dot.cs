@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using GravitySystem;
+using SelectSystem;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Models
 {
@@ -10,14 +12,48 @@ namespace Models
         Vector2 _vDir;
 
         public Color IdleColor;
+
         [Tooltip("Horizontal force magnitude")]
         public float InitialOrbitDeltaForce;
+
         [Tooltip("Duration of the orbital kick")]
         public float InitialOrbitKickDuration = 1f;
-        [Tooltip("Vertical force magnitude")]
-        public float InitialOrbitVertialForce;
+
+        [Tooltip("Vertical force magnitude")] public float InitialOrbitVertialForce;
+
+        public Light Light;
         public Star ParentStar;
+
+        public Selectable Selectable;
         public Color SelectedColor;
+
+        void Awake()
+        {
+            Assert.IsNotNull(Selectable);
+            Assert.IsNotNull(Light);
+
+            Selectable.OnSelectedStatusChanged += OnSelectedStatusChanged;
+        }
+
+        /// <summary>
+        ///     Changes the color of the lights indicating whether an item it's selected or not
+        /// </summary>
+        /// <param name="oldstatus"></param>
+        /// <param name="newstatus"></param>
+        void OnSelectedStatusChanged( Selectable.StatusEnum oldstatus, Selectable.StatusEnum newstatus )
+        {
+            switch (newstatus)
+            {
+                case Selectable.StatusEnum.Selected:
+                    Light.color = SelectedColor;
+                    break;
+                case Selectable.StatusEnum.Idle:
+                    Light.color = IdleColor;
+                    break;
+                default:
+                    break;
+            }
+        }
 
         protected override void OnDotTooClose()
         {
@@ -29,12 +65,12 @@ namespace Models
         /// </summary>
         public void InitialOrbitKick()
         {
-            _vDir = Vector2.up; //(Random.insideUnitCircle - (Vector2)ParentStar.transform.position).normalized;
-            _dDir = Vector2.right; //((Vector2)Vector3.Cross(Vector3.forward, vDir)).normalized;
+            _vDir = ( Random.insideUnitCircle - (Vector2) ParentStar.transform.position ).normalized;
+            _dDir = ( (Vector2) Vector3.Cross(Vector3.forward, _vDir) ).normalized;
 
             //Perform an initial kick to move it from (0,0,0)
-            Rigidbody2D.AddForce(_vDir );
-            Rigidbody2D.AddForce(_dDir );
+            Rigidbody2D.AddForce(_vDir);
+            Rigidbody2D.AddForce(_dDir);
 
             StartCoroutine(OrbitalKickRoutine());
         }
@@ -52,7 +88,7 @@ namespace Models
                 transform.LookAt(ParentStar.transform.position);
 
                 //Get the new up direction vector
-                _vDir =  -transform.forward;
+                _vDir = -transform.forward;
                 _dDir = ( (Vector2) Vector3.Cross(Vector3.forward, _vDir) ).normalized;
 
                 //Lerps the forces giving more force towards the vertical direction at the begining

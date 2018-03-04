@@ -129,5 +129,7 @@ MonoBehaviour:
   InitialOrbitDeltaForce: 1.6
   InitialOrbitKickDuration: 2
   InitialOrbitVertialForce: 1.5
+  Light: {fileID: 108161032955390360}
   ParentStar: {fileID: 0}
+  Selectable: {fileID: 114231429460696626}
   SelectedColor: {r: 0, g: 0.6901961, b: 1, a: 0}

@@ -4,18 +4,40 @@ namespace SelectSystem
 {
     public class Selectable : MonoBehaviour
     {
+        public delegate void SelectedStatusChanged( StatusEnum oldStatus, StatusEnum newStatus );
+
         public enum StatusEnum
         {
             Idle,
             Selected
         }
 
-        public delegate void SelectedStatusChanged( StatusEnum oldStatus, StatusEnum newStatus );
+        public SelectedStatusChanged OnSelectedStatusChanged;
 
         public SelectSystem SelectSystem;
         public StatusEnum Status;
-        public SelectedStatusChanged OnSelectedStatusChanged;
 
+        void Awake()
+        {
+            SelectSystem = ScriptableObject.CreateInstance<SelectSystem>();
+            SelectSystem.AddSelectable(this);
+        }
 
+        void OnDestroy()
+        {
+            SelectSystem.RemoveSelectable(this);
+        }
+
+        public void Select()
+        {
+            OnSelectedStatusChanged?.Invoke(Status, StatusEnum.Selected);
+            Status = StatusEnum.Selected;
+        }
+
+        public void Deselect()
+        {
+            OnSelectedStatusChanged?.Invoke(Status, StatusEnum.Idle);
+            Status = StatusEnum.Idle;
+        }
     }
 }

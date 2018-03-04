@@ -11,4 +11,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 748083df18734006b1a0c4b8f506a6be, type: 3}
   m_Name: SelectSytem
   m_EditorClassIdentifier: 
+  Bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  FirstPos: {x: 0, y: 0}
+  FourthPos: {x: 0, y: 0}
   InputManager: {fileID: 0}
+  SecondPos: {x: 0, y: 0}
+  ThirdPos: {x: 0, y: 0}
