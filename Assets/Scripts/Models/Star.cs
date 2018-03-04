@@ -5,19 +5,17 @@ namespace Models
 {
     public class Star : GravitySource
     {
-        public GravitySystem.GravitySystem GravitySystem;
-        public float MinSpawnRate;
-        public float MaxSpawnRate;
+        float _spawnTicker;
         public Dot DotPrefab;
         public IList<Dot> Dots;
-
-
-        float _spawnTicker = 0f;
+        public GravitySystem.GravitySystem GravitySystem;
+        public float MaxSpawnRate;
+        public float MinSpawnRate;
 
         void Start()
         {
             Dots = new List<Dot>();
-           GravitySystem.AddGravitySource(this);
+            GravitySystem.AddGravitySource(this);
         }
 
         void OnDestroy()
@@ -31,16 +29,15 @@ namespace Models
         }
 
 
-
         /// <summary>
-        /// Uses the spawnRate to create a new Dot when it's time
+        ///     Uses the spawnRate to create a new Dot when it's time
         /// </summary>
         void SpawnDotRoutine()
         {
             //When the ticker gets to 0, Spawn the Dot and restart it
             if (_spawnTicker <= 0)
             {
-                _spawnTicker  = Random.Range(MinSpawnRate, MaxSpawnRate);
+                _spawnTicker = Random.Range(MinSpawnRate, MaxSpawnRate);
                 var d = Instantiate(DotPrefab, transform);
                 d.ParentStar = this;
                 d.InitialOrbitKick();

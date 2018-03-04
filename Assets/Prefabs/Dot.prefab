@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 108161032955390360}
   - component: {fileID: 114367208074325098}
   - component: {fileID: 50306046801348614}
+  - component: {fileID: 114231429460696626}
   m_Layer: 0
   m_Name: Dot
   m_TagString: Untagged
@@ -36,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1006543823717900}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.013521569, y: 0.07031217, z: -0.0028342768}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -71,7 +72,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0, g: 0.12997723, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.12941177, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 0.25
   m_SpotAngle: 30
@@ -98,6 +99,19 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &114231429460696626
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1006543823717900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf99be4b7cba4ea682cc10de580330df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SelectSystem: {fileID: 11400000, guid: 0558178807990904f803d9b3cca31361, type: 2}
+  Status: 0
 --- !u!114 &114367208074325098
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -111,7 +125,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GravitySystem: {fileID: 11400000, guid: a4565f78ce2411142b407c40b4e6375c, type: 2}
   Rigidbody2D: {fileID: 50306046801348614}
-  ParentStar: {fileID: 0}
-  InitialOrbitVertialForce: 1.5
-  InitialOrbitDeltaForce: 4
+  IdleColor: {r: 0, g: 0.12941177, b: 1, a: 0}
+  InitialOrbitDeltaForce: 1.6
   InitialOrbitKickDuration: 2
+  InitialOrbitVertialForce: 1.5
+  ParentStar: {fileID: 0}
+  SelectedColor: {r: 0, g: 0.6901961, b: 1, a: 0}

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace GravitySystem
 {
@@ -13,10 +12,7 @@ namespace GravitySystem
             GravitySystem.OnNewGravitySource += NewGravitySource;
             GravitySystem.OnDestroyedGravitySource += DestroyedGravitySource;
 
-            foreach (var gs in GravitySystem.GravitySources)
-            {
-                gs.OnGravityPulse += OnGravityPulse;
-            }
+            foreach (var gs in GravitySystem.GravitySources) gs.OnGravityPulse += OnGravityPulse;
         }
 
         void OnDestroy()
@@ -24,10 +20,7 @@ namespace GravitySystem
             GravitySystem.OnNewGravitySource -= NewGravitySource;
             GravitySystem.OnDestroyedGravitySource -= DestroyedGravitySource;
 
-            foreach (var gs in GravitySystem.GravitySources)
-            {
-                gs.OnGravityPulse -= OnGravityPulse;
-            }
+            foreach (var gs in GravitySystem.GravitySources) gs.OnGravityPulse -= OnGravityPulse;
         }
 
         void DestroyedGravitySource( GravitySource gs )
@@ -42,7 +35,7 @@ namespace GravitySystem
 
 
         /// <summary>
-        /// Applies the different gravity forces onto the current element
+        ///     Applies the different gravity forces onto the current element
         /// </summary>
         /// <param name="sourcepoint"></param>
         /// <param name="pullforce"></param>
@@ -75,7 +68,6 @@ namespace GravitySystem
 
         protected virtual void OnDotTooClose()
         {
-
         }
     }
 }
