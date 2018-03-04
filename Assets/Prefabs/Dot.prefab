@@ -112,6 +112,6 @@ MonoBehaviour:
   GravitySystem: {fileID: 11400000, guid: a4565f78ce2411142b407c40b4e6375c, type: 2}
   Rigidbody2D: {fileID: 50306046801348614}
   ParentStar: {fileID: 0}
-  InitialOrbitVertialForce: 2
+  InitialOrbitVertialForce: 1.5
   InitialOrbitDeltaForce: 4
   InitialOrbitKickDuration: 2
