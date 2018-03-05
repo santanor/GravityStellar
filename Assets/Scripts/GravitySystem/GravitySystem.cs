@@ -36,20 +36,4 @@ namespace GravitySystem
             OnDestroyedGravitySource?.Invoke(gs);
         }
     }
-
-    public static class MakeScriptableObject
-    {
-        [MenuItem("Assets/Create/GravitySystem")]
-        public static void CreateMyAsset()
-        {
-            var asset = ScriptableObject.CreateInstance<GravitySystem>();
-
-            AssetDatabase.CreateAsset(asset, "Assets/Scripts/GravitySystem/GravitySytem.asset");
-            AssetDatabase.SaveAssets();
-
-            EditorUtility.FocusProjectWindow();
-
-            Selection.activeObject = asset;
-        }
-    }
 }

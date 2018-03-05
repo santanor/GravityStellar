@@ -12,7 +12,6 @@ namespace InputSystem
 
         public DragEvent OnDrag;
         public DragEvent OnDragFinish;
-
         public TouchEvent OnTouch;
 
         #if UNITY_EDITOR

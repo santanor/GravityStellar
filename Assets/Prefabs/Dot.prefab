@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 108161032955390360}
   - component: {fileID: 114367208074325098}
   - component: {fileID: 50306046801348614}
-  - component: {fileID: 114231429460696626}
+  - component: {fileID: 114761246563364846}
   m_Layer: 0
   m_Name: Dot
   m_TagString: Untagged
@@ -99,19 +99,6 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &114231429460696626
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1006543823717900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf99be4b7cba4ea682cc10de580330df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SelectSystem: {fileID: 11400000, guid: 0558178807990904f803d9b3cca31361, type: 2}
-  Status: 0
 --- !u!114 &114367208074325098
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -131,5 +118,18 @@ MonoBehaviour:
   InitialOrbitVertialForce: 1.5
   Light: {fileID: 108161032955390360}
   ParentStar: {fileID: 0}
-  Selectable: {fileID: 114231429460696626}
+  Selectable: {fileID: 114761246563364846}
   SelectedColor: {r: 0, g: 0.6901961, b: 1, a: 0}
+--- !u!114 &114761246563364846
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1006543823717900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf99be4b7cba4ea682cc10de580330df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SelectSystem: {fileID: 0}
+  Status: 0

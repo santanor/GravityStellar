@@ -1,4 +1,5 @@
-﻿using InputSystem;
+﻿using System.Linq;
+using InputSystem;
 using UnityEngine;
 
 namespace SelectSystem
@@ -9,10 +10,8 @@ namespace SelectSystem
         public InputManager Manager;
         public SelectSystem SelectSystem;
 
-
         void Awake()
         {
-            SelectSystem = ScriptableObject.CreateInstance<SelectSystem>();
             Manager.OnDrag += OnDrag;
             Manager.OnDragFinish += OnDragFinish;
             Manager.OnTouch += OnTouch;
@@ -24,10 +23,10 @@ namespace SelectSystem
         {
             LineRenderer.enabled = true;
             //Get the 4 corners from the Select System and assign them to the line renderer
+            // ReSharper disable once SuspiciousTypeConversion.Global
             LineRenderer.SetPositions(new Vector3[]
             {
-                SelectSystem.FirstPos, SelectSystem.SecondPos, SelectSystem.FourthPos,
-                 SelectSystem.ThirdPos
+                SelectSystem.Corners[0], SelectSystem.Corners[1], SelectSystem.Corners[3], SelectSystem.Corners[2]
             });
 
             LineRenderer.positionCount = 4;

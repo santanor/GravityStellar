@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using InputSystem;
 using UnityEditor;
 using UnityEngine;
@@ -6,27 +9,23 @@ using UnityEngine.Assertions;
 
 namespace SelectSystem
 {
-    public class SelectSystem : ScriptableObject
+    public class SelectSystem : MonoBehaviour
     {
         [SerializeField] IList<Selectable> _selectables;
 
         StatusEnum _status;
-        public Bounds Bounds;
+        public Rect Rect;
 
         //Used to store the first drag position.
-        public Vector2 FirstPos;
-        public Vector2 FourthPos;
         public InputManager InputManager;
-        public Vector2 SecondPos;
-        public Vector2 ThirdPos;
 
-        void OnEnable()
+        public Vector3[] Corners = new Vector3[4];
+
+        void Start()
         {
-
             _selectables = new List<Selectable>();
             InputManager = InputManager == null ? FindObjectOfType<InputManager>() : InputManager;
             Assert.IsNotNull(InputManager);
-
             InputManager.OnDrag += OnDrag;
             InputManager.OnDragFinish += OnDragFinish;
             InputManager.OnTouch += OnTouch;
@@ -61,7 +60,8 @@ namespace SelectSystem
         void OnTouch( Vector2 screenpos, Vector2 worldpos )
         {
             RestartSelecteds();
-            FirstPos = worldpos;
+            RestartBounds();
+            Corners[0]= worldpos;//First corner
         }
 
         void OnDragFinish( Vector2 screenpos, Vector2 worldpo )
@@ -72,23 +72,27 @@ namespace SelectSystem
         void OnDrag( Vector2 screenpos, Vector2 worldpo )
         {
             _status = StatusEnum.Selecting;
-            Bounds = new Bounds();
             CalculateBoundCorners(worldpo);
-
-            //Encapsulate the corners
-            Bounds.Encapsulate(FirstPos);
-            Bounds.Encapsulate(SecondPos);
-            Bounds.Encapsulate(ThirdPos);
-            Bounds.Encapsulate(FourthPos);
+            Rect = new Rect
+            {
+                center = ( Corners[0] + Corners[3] ) / 2,
+                yMax = Corners.Max(c => c.y),
+                yMin = Corners.Min(c => c.y),
+                xMax = Corners.Max(c => c.x),
+                xMin = Corners.Min(c => c.x)
+            };
 
             SelectWithinBounds();
         }
 
+        /// <summary>
+        /// For every object, check whether is within the bounds and change its state to selected (Or not!! :D )
+        /// </summary>
         void SelectWithinBounds()
         {
             foreach (var selectable in _selectables)
             {
-                if (Bounds.Contains(selectable.transform.position))
+                if (Rect.Contains(selectable.transform.position, true))
                 {
                     selectable.Select();
                 }
@@ -107,14 +111,23 @@ namespace SelectSystem
             foreach (var selectable in _selectables) selectable.Deselect();
         }
 
+        void RestartBounds()
+        {
+            Rect = new Rect();
+            for (var i = 0; i < Corners.Length; i++)
+            {
+                 Corners[i] = Vector2.zero;
+            }
+        }
+
         /// <summary>
         ///     Assigns the corners of the bounds creating a square from the first finger pos and the current one
         /// </summary>
         void CalculateBoundCorners( Vector2 currentFingerPos )
         {
-            SecondPos = new Vector2(FirstPos.x, currentFingerPos.y);
-            ThirdPos = new Vector2(currentFingerPos.x, FirstPos.y);
-            FourthPos = currentFingerPos;
+            Corners[1] = new Vector2(Corners[0].x, currentFingerPos.y);
+            Corners[2] = new Vector2(currentFingerPos.x, Corners[0].y);
+            Corners[3] = currentFingerPos;
         }
 
         enum StatusEnum
@@ -124,26 +137,4 @@ namespace SelectSystem
         }
     }
 
-    #region Create Asset
-
-    /// <summary>
-    ///     Only used to create the asset
-    /// </summary>
-    public static class MakeScriptableObject
-    {
-        [MenuItem("Assets/Create/SelectSystem")]
-        public static void CreateMyAsset()
-        {
-            var asset = ScriptableObject.CreateInstance<SelectSystem>();
-
-            AssetDatabase.CreateAsset(asset, "Assets/Scripts/SelectSystem/SelectSytem.asset");
-            AssetDatabase.SaveAssets();
-
-            EditorUtility.FocusProjectWindow();
-
-            Selection.activeObject = asset;
-        }
-    }
-
-    #endregion
 }

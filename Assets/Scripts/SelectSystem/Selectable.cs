@@ -19,7 +19,7 @@ namespace SelectSystem
 
         void Awake()
         {
-            SelectSystem = ScriptableObject.CreateInstance<SelectSystem>();
+            SelectSystem = SelectSystem == null ? FindObjectOfType<SelectSystem>() : SelectSystem;
             SelectSystem.AddSelectable(this);
         }
 
