@@ -27,15 +27,17 @@ namespace SelectSystem
             InputManager = InputManager == null ? FindObjectOfType<InputManager>() : InputManager;
             Assert.IsNotNull(InputManager);
             InputManager.OnDrag += OnDrag;
-            InputManager.OnDragFinish += OnDragFinish;
-            InputManager.OnTouch += OnTouch;
+            InputManager.OnTouchFinish += OnTouchFinish;
+            InputManager.OnLongTouch += OnLongTouch;
+            InputManager.OnShortTouch += OnShortTouch;
         }
 
         void OnDisable()
         {
             InputManager.OnDrag -= OnDrag;
-            InputManager.OnDragFinish -= OnDragFinish;
-            InputManager.OnTouch -= OnTouch;
+            InputManager.OnTouchFinish -= OnTouchFinish;
+            InputManager.OnLongTouch -= OnLongTouch;
+            InputManager.OnShortTouch -= OnShortTouch;
         }
 
         /// <summary>
@@ -57,18 +59,33 @@ namespace SelectSystem
             _selectables.Remove(s);
         }
 
-        void OnTouch( Vector2 screenpos, Vector2 worldpos )
+        /// <summary>
+        /// Starts a new selection routine via a long touch
+        /// </summary>
+        /// <param name="screenpos"></param>
+        /// <param name="worldpos"></param>
+        void OnLongTouch( Vector2 screenpos, Vector2 worldpos )
         {
             RestartSelecteds();
             RestartBounds();
             Corners[0]= worldpos;//First corner
         }
 
-        void OnDragFinish( Vector2 screenpos, Vector2 worldpo )
+        /// <summary>
+        /// Finger up. Restart the selected status
+        /// </summary>
+        /// <param name="screenpos"></param>
+        /// <param name="worldpo"></param>
+        void OnTouchFinish( Vector2 screenpos, Vector2 worldpo )
         {
             _status = StatusEnum.Idle;
         }
 
+        /// <summary>
+        /// The finger is being dragged. Update the bounds and selected "selectables"
+        /// </summary>
+        /// <param name="screenpos"></param>
+        /// <param name="worldpo"></param>
         void OnDrag( Vector2 screenpos, Vector2 worldpo )
         {
             _status = StatusEnum.Selecting;
@@ -83,6 +100,18 @@ namespace SelectSystem
             };
 
             SelectWithinBounds();
+        }
+
+        /// <summary>
+        /// A short touch has happened. Cancel the selection process
+        /// </summary>
+        /// <param name="screenpos"></param>
+        /// <param name="worldpo"></param>
+        void OnShortTouch( Vector2 screenpos, Vector2 worldpo )
+        {
+            RestartSelecteds();
+            RestartBounds();
+            _status = StatusEnum.Idle;
         }
 
         /// <summary>

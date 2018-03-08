@@ -13,8 +13,8 @@ namespace SelectSystem
         void Awake()
         {
             Manager.OnDrag += OnDrag;
-            Manager.OnDragFinish += OnDragFinish;
-            Manager.OnTouch += OnTouch;
+            Manager.OnTouchFinish += OnTouchFinish;
+            Manager.OnLongTouch+= OnLongTouch;
 
             LineRenderer.enabled = false;
         }
@@ -32,12 +32,12 @@ namespace SelectSystem
             LineRenderer.positionCount = 4;
         }
 
-        void OnDragFinish( Vector2 screenpos, Vector2 worldpo )
+        void OnTouchFinish( Vector2 screenpos, Vector2 worldpo )
         {
             LineRenderer.enabled = false;
         }
 
-        void OnTouch( Vector2 screenpos, Vector2 worldpos )
+        void OnLongTouch( Vector2 screenpos, Vector2 worldpos )
         {
             LineRenderer.enabled = false;
         }
