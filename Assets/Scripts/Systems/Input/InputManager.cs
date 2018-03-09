@@ -84,6 +84,7 @@ namespace InputSystem
             _ticker += Time.deltaTime;
         }
 
+        //TODO Update input method to match the one in the editor
         /// <summary>
         /// Input system used when the app is running on a mobile device
         /// </summary>

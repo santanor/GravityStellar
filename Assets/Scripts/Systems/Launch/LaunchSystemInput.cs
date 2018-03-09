@@ -9,44 +9,38 @@ namespace LaunchSystem
     public class LaunchSystemInput : MonoBehaviour
     {
 
-        public delegate void LaunchEvent( Vector2 cameraPos, Vector3 worldPos );
+        public delegate void LaunchProcessEvent( Vector2 screenPos, Vector3 worldPos );
 
-        [Tooltip("Delta between tap and release to make a 'touch' a short one")]
-        public float ShortTouchThreshold = 0.2f;
+        public delegate void LaunchEvent( Vector2 direction, float distanceFromOrigin );
 
         public InputManager InputManager;
-        public LaunchEvent OnLaunchStart;
-        public LaunchEvent OnLaunchDrag;
-        public LaunchEvent OnLaunchFinish;
-
-        /// <summary>
-        /// Used to check if a touch is a short one.
-        /// </summary>
-        float _ticker;
+        public LaunchProcessEvent OnLaunchProcessStart;
+        public LaunchProcessEvent OnLaunchProcessDrag;
+        public LaunchProcessEvent OnLaunchProcessFinish;
 
         void Awake()
         {
             InputManager = InputManager == null ? FindObjectOfType<InputManager>() : InputManager;
             Assert.IsNotNull(InputManager);
 
-            InputManager.OnLongTouch+= OnTouch;
+            InputManager.OnLongTouch+= OnLongTouch;
             InputManager.OnDrag += OnDrag;
             InputManager.OnTouchFinish += OnTouchFinish;
         }
 
         void OnTouchFinish( Vector2 screenpos, Vector2 worldpos )
         {
-
+            OnLaunchProcessFinish?.Invoke(screenpos, worldpos);
         }
 
         void OnDrag( Vector2 screenpos, Vector2 worldpo )
         {
-
+            OnLaunchProcessDrag?.Invoke(screenpos, worldpo);
         }
 
-        void OnTouch( Vector2 screenpos, Vector2 worldpos )
+        void OnLongTouch( Vector2 screenpos, Vector2 worldpos )
         {
-            //_ticker = DateTime.Now.;
+            OnLaunchProcessStart?.Invoke(screenpos, worldpos);
         }
     }
 }
