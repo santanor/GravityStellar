@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using InputSystem;
+﻿using InputSystem;
 using UnityEngine;
 
 namespace SelectSystem
@@ -14,7 +13,7 @@ namespace SelectSystem
         {
             Manager.OnDrag += OnDrag;
             Manager.OnTouchFinish += OnTouchFinish;
-            Manager.OnLongTouch+= OnLongTouch;
+            Manager.OnLongTouch += OnLongTouch;
 
             LineRenderer.enabled = false;
         }
@@ -24,7 +23,7 @@ namespace SelectSystem
             LineRenderer.enabled = true;
             //Get the 4 corners from the Select System and assign them to the line renderer
             // ReSharper disable once SuspiciousTypeConversion.Global
-            LineRenderer.SetPositions(new Vector3[]
+            LineRenderer.SetPositions(new[]
             {
                 SelectSystem.Corners[0], SelectSystem.Corners[1], SelectSystem.Corners[3], SelectSystem.Corners[2]
             });

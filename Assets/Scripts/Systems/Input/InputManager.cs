@@ -1,48 +1,47 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
 
 namespace InputSystem
 {
     public class InputManager : MonoBehaviour
     {
         public delegate void TouchEvent( Vector2 screenPos, Vector2 worldPos );
+#if UNITY_EDITOR
+        bool _isDragging;
+#endif
+        //Saves where the finger was at the begining of a short touch
+        Vector2 _shortTouchInitPos;
+
+        //Used to count the time between touch down and up
+        float _ticker;
 
         public TouchEvent OnDrag;
-        public TouchEvent  OnTouchFinish;
         public TouchEvent OnLongTouch;
         public TouchEvent OnShortTouch;
+        public TouchEvent OnTouchFinish;
 
         [Tooltip("Max time for the finger to stay down for it to be a short touch")]
         public float ShortTouchThreshold = 0.2f;
 
-        //Used to count the time between touch down and up
-        float _ticker;
-        //Saves where the finger was at the begining of a short touch
-        Vector2 _shortTouchInitPos;
-        #if UNITY_EDITOR
-        bool _isDragging;
-        #endif
-
 
         void Update()
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             EditorInput();
-            #else
+#else
             MobileInput();
             #endif
         }
 
 
         /// <summary>
-        /// Input system used when the app is running in the editor. Mainly debugger
+        ///     Input system used when the app is running in the editor. Mainly debugger
         /// </summary>
         void EditorInput()
         {
             //Starts a short touch
             // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (Input.GetMouseButton(0) &&  _shortTouchInitPos  == Vector2.zero)
+            if (Input.GetMouseButton(0) && _shortTouchInitPos == Vector2.zero)
             {
                 _ticker = 0;
                 _shortTouchInitPos = Input.mousePosition;
@@ -57,22 +56,16 @@ namespace InputSystem
 
             //The finger is being dragged
             if (Input.GetMouseButton(0) && _isDragging)
-            {
                 OnDrag?.Invoke(Input.mousePosition, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            }
 
             //Finger up
             if (Input.GetMouseButtonUp(0))
             {
                 //A Short touch
                 if (_ticker < ShortTouchThreshold)
-                {
                     OnShortTouch?.Invoke(Input.mousePosition, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-                }
                 else //A Long touch
-                {
                     OnTouchFinish?.Invoke(Input.mousePosition, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-                }
 
                 //Restart the variables on finger up
                 _ticker = 0;
@@ -86,7 +79,7 @@ namespace InputSystem
 
         //TODO Update input method to match the one in the editor
         /// <summary>
-        /// Input system used when the app is running on a mobile device
+        ///     Input system used when the app is running on a mobile device
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         void MobileInput()

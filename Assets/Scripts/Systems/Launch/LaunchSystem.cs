@@ -5,6 +5,5 @@ namespace LaunchSystem
     public class LaunchSystem : MonoBehaviour
     {
         public LaunchSystemInput SystemInput;
-        
     }
 }

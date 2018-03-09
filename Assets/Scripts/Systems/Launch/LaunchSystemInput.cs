@@ -1,46 +1,58 @@
-﻿using System;
+﻿using System.Linq;
 using InputSystem;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Experimental.UIElements;
 
 namespace LaunchSystem
 {
     public class LaunchSystemInput : MonoBehaviour
     {
+        public delegate void LaunchEvent( Vector2 direction, float distanceFromOrigin );
 
         public delegate void LaunchProcessEvent( Vector2 screenPos, Vector3 worldPos );
 
-        public delegate void LaunchEvent( Vector2 direction, float distanceFromOrigin );
 
         public InputManager InputManager;
-        public LaunchProcessEvent OnLaunchProcessStart;
         public LaunchProcessEvent OnLaunchProcessDrag;
         public LaunchProcessEvent OnLaunchProcessFinish;
+        public LaunchProcessEvent OnLaunchProcessStart;
+        public SelectSystem.SelectSystem SelectSystem;
 
         void Awake()
         {
             InputManager = InputManager == null ? FindObjectOfType<InputManager>() : InputManager;
             Assert.IsNotNull(InputManager);
 
-            InputManager.OnLongTouch+= OnLongTouch;
+            InputManager.OnLongTouch += OnLongTouch;
             InputManager.OnDrag += OnDrag;
             InputManager.OnTouchFinish += OnTouchFinish;
         }
 
         void OnTouchFinish( Vector2 screenpos, Vector2 worldpos )
         {
-            OnLaunchProcessFinish?.Invoke(screenpos, worldpos);
+            if (SelectSystem.HasItemsSelected())
+            {
+                OnLaunchProcessFinish?.Invoke(screenpos, worldpos);
+            }
         }
 
         void OnDrag( Vector2 screenpos, Vector2 worldpo )
         {
-            OnLaunchProcessDrag?.Invoke(screenpos, worldpo);
+            if (SelectSystem.HasItemsSelected())
+            {
+                OnLaunchProcessDrag?.Invoke(screenpos, worldpo);
+            }
+
         }
 
         void OnLongTouch( Vector2 screenpos, Vector2 worldpos )
         {
-            OnLaunchProcessStart?.Invoke(screenpos, worldpos);
+            //Only start this mode if there are items selected
+            if (SelectSystem.HasItemsSelected())
+            {
+                OnLaunchProcessStart?.Invoke(screenpos, worldpos);
+            }
+
         }
     }
 }
