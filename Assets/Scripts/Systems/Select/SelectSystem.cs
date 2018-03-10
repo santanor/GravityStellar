@@ -11,31 +11,29 @@ namespace SelectSystem
     {
         [SerializeField] public IList<Selectable> Selectables;
 
-        StatusEnum _status;
+        public StatusEnum Status;
 
         public Vector3[] Corners = new Vector3[4];
 
-        //Used to store the first drag position.
-        public InputManager InputManager;
         public Rect Rect;
+        public SelectSystemInput SystemInput;
 
-        void Start()
+        void Awake()
         {
             Selectables = new List<Selectable>();
-            InputManager = InputManager == null ? FindObjectOfType<InputManager>() : InputManager;
-            Assert.IsNotNull(InputManager);
-            InputManager.OnDrag += OnDrag;
-            InputManager.OnTouchFinish += OnTouchFinish;
-            InputManager.OnLongTouch += OnLongTouch;
-            InputManager.OnShortTouch += OnShortTouch;
+            Assert.IsNotNull(SystemInput);
+            SystemInput.OnSelectingDrag += OnDrag;
+            SystemInput.OnSelectStart += OnSelectStart;
+            SystemInput.OnSelectStop += OnSelectStop;
+            SystemInput.OnSelectShortTouch += OnShortTouch;
         }
 
-        void OnDisable()
+        void OnDestroy()
         {
-            InputManager.OnDrag -= OnDrag;
-            InputManager.OnTouchFinish -= OnTouchFinish;
-            InputManager.OnLongTouch -= OnLongTouch;
-            InputManager.OnShortTouch -= OnShortTouch;
+            SystemInput.OnSelectingDrag -= OnDrag;
+            SystemInput.OnSelectStart -= OnSelectStart;
+            SystemInput.OnSelectStop -= OnSelectStop;
+            SystemInput.OnSelectShortTouch -= OnShortTouch;
         }
 
         /// <summary>
@@ -62,25 +60,23 @@ namespace SelectSystem
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
-        void OnLongTouch( Vector2 screenpos, Vector2 worldpos )
+        void OnSelectStart( Vector2 screenpos, Vector2 worldpos )
         {
-            if(!HasItemsSelected())
-            {
-                _status = StatusEnum.Selecting;
-                RestartSelecteds();
-                RestartBounds();
-                Corners[0] = worldpos; //First corner
-            }
+            Status = StatusEnum.Selecting;
+            RestartSelecteds();
+            RestartBounds();
+            Corners[0] = worldpos; //First corner
+
         }
 
         /// <summary>
-        ///     Finger up. Restart the selected status
+        /// Finger up. Restart the selected status
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpo"></param>
-        void OnTouchFinish( Vector2 screenpos, Vector2 worldpo )
+        void OnSelectStop( Vector2 screenpos, Vector2 worldpo )
         {
-            _status = StatusEnum.Idle;
+            Status = StatusEnum.Idle;
         }
 
         /// <summary>
@@ -90,25 +86,23 @@ namespace SelectSystem
         /// <param name="worldpo"></param>
         void OnDrag( Vector2 screenpos, Vector2 worldpo )
         {
-            if (_status == StatusEnum.Selecting)
+            Status = StatusEnum.Selecting;
+            CalculateBoundCorners(worldpo);
+            Rect = new Rect
             {
-                _status = StatusEnum.Selecting;
-                CalculateBoundCorners(worldpo);
-                Rect = new Rect
-                {
-                    center = ( Corners[0] + Corners[3] ) / 2,
-                    yMax = Corners.Max(c => c.y),
-                    yMin = Corners.Min(c => c.y),
-                    xMax = Corners.Max(c => c.x),
-                    xMin = Corners.Min(c => c.x)
-                };
+                center = ( Corners[0] + Corners[3] ) / 2,
+                yMax = Corners.Max(c => c.y),
+                yMin = Corners.Min(c => c.y),
+                xMax = Corners.Max(c => c.x),
+                xMin = Corners.Min(c => c.x)
+            };
 
-                SelectWithinBounds();
-            }
+            SelectWithinBounds();
+
         }
 
         /// <summary>
-        ///     A short touch has happened. Cancel the selection process
+        ///  A short touch has happened. Cancel the selection process
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpo"></param>
@@ -116,7 +110,7 @@ namespace SelectSystem
         {
             RestartSelecteds();
             RestartBounds();
-            _status = StatusEnum.Idle;
+            Status = StatusEnum.Idle;
         }
 
         /// <summary>
@@ -170,7 +164,7 @@ namespace SelectSystem
             Corners[3] = currentFingerPos;
         }
 
-        enum StatusEnum
+        public enum StatusEnum
         {
             Idle,
             Selecting

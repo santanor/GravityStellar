@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4223226359816792}
   - component: {fileID: 114782401761728944}
+  - component: {fileID: 114498972465178532}
   m_Layer: 0
   m_Name: SelectSystem
   m_TagString: Untagged
@@ -65,12 +66,25 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1645671457966010}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.11643952, y: -0.5127696, z: -0.48046875}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4223226359816792}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114498972465178532
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1442244444712956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 102d0d1c4b664871b4248de80822b8ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InputManager: {fileID: 0}
+  SelectSystem: {fileID: 114782401761728944}
 --- !u!114 &114782401761728944
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -82,14 +96,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 748083df18734006b1a0c4b8f506a6be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  FirstPos: {x: 0, y: 0}
-  FourthPos: {x: 0, y: 0}
-  InputManager: {fileID: 0}
-  SecondPos: {x: 0, y: 0}
-  ThirdPos: {x: 0, y: 0}
+  Status: 0
+  Corners:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  Rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  SystemInput: {fileID: 114498972465178532}
 --- !u!114 &114949813847867074
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -102,8 +121,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LineRenderer: {fileID: 120445313647425946}
-  Manager: {fileID: 0}
-  SelectSystem: {fileID: 11400000, guid: 0558178807990904f803d9b3cca31361, type: 2}
+  SystemInput: {fileID: 114498972465178532}
+  SelectSystem: {fileID: 114782401761728944}
 --- !u!120 &120445313647425946
 LineRenderer:
   m_ObjectHideFlags: 1

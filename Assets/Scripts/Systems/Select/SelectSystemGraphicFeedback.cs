@@ -6,14 +6,14 @@ namespace SelectSystem
     public class SelectSystemGraphicFeedback : MonoBehaviour
     {
         public LineRenderer LineRenderer;
-        public InputManager Manager;
+        public SelectSystemInput SystemInput;
         public SelectSystem SelectSystem;
 
         void Awake()
         {
-            Manager.OnDrag += OnDrag;
-            Manager.OnTouchFinish += OnTouchFinish;
-            Manager.OnLongTouch += OnLongTouch;
+            SystemInput.OnSelectingDrag += OnDrag;
+            SystemInput.OnSelectStop += OnTouchFinish;
+            SystemInput.OnSelectStart += OnLongTouch;
 
             LineRenderer.enabled = false;
         }
