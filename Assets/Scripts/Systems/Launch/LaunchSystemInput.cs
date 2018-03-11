@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using InputSystem;
+using SelectSystem;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -38,7 +39,8 @@ namespace LaunchSystem
 
         void OnDrag( Vector2 screenpos, Vector2 worldpo )
         {
-            if (SelectSystem.HasItemsSelected())
+            if (SelectSystem.HasItemsSelected()
+                && SelectSystem.Status == global::SelectSystem.SelectSystem.StatusEnum.Idle)
             {
                 OnLaunchProcessDrag?.Invoke(screenpos, worldpo);
             }

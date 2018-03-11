@@ -7,6 +7,7 @@ namespace LaunchSystem
         Vector2 _initialLaunchPos;
         SpriteRenderer _sprite;
         public GameObject Arrow;
+        GameObject _ArrowSpriteGO;
         public LaunchSystem LaunchSystem;
         public LaunchSystemInput SystemInput;
 
@@ -16,6 +17,8 @@ namespace LaunchSystem
             SystemInput.OnLaunchProcessStart += BeginShowingArrow;
             SystemInput.OnLaunchProcessDrag += UpdateArrow;
             SystemInput.OnLaunchProcessFinish += StopShowingArrow;
+
+            _ArrowSpriteGO = Arrow.transform.GetChild(0).gameObject;
         }
 
         void OnDestroy()
@@ -26,7 +29,7 @@ namespace LaunchSystem
         }
 
         /// <summary>
-        ///     Make the arrow look in the direction created from the initial pos and the current finger pos
+        ///  Make the arrow look in the direction created from the initial pos and the current finger pos
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
@@ -34,9 +37,19 @@ namespace LaunchSystem
         {
             //By doing this we can then only extrude the sprite in the "width"
             Arrow.transform.LookAt(_initialLaunchPos);
+            Arrow.transform.position = worldpos;
 
+            //Get the distance from the finger to the initial pos
             var dst = Vector2.Distance(worldpos, _initialLaunchPos);
-            _sprite.size = new Vector2(dst, _sprite.size.y);
+
+            //TODO Make this piece of crap right.
+
+            //var dir = (_initialLaunchPos - (Vector2)worldpos).normalized;
+            var pos = _ArrowSpriteGO.transform.localPosition;
+            pos.z = dst/2;
+            _ArrowSpriteGO.transform.localPosition = pos;
+
+            _sprite.size = new Vector2(dst, 0.3f);
         }
 
         /// <summary>
@@ -60,6 +73,11 @@ namespace LaunchSystem
             _initialLaunchPos = worldpos;
             _sprite.size = Vector2.zero;
             Arrow.SetActive(true);
+        }
+
+        void OnDrawGizmos()
+        {
+            Gizmos.DrawSphere(_initialLaunchPos, 0.1f);
         }
     }
 }
