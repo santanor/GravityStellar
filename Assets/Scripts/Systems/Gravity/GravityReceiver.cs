@@ -9,6 +9,7 @@ namespace GravitySystem
 
         void Start()
         {
+            GravitySystem.AddGravityReceiver(this);
             GravitySystem.OnNewGravitySource += NewGravitySource;
             GravitySystem.OnDestroyedGravitySource += DestroyedGravitySource;
 
@@ -17,6 +18,7 @@ namespace GravitySystem
 
         void OnDestroy()
         {
+            GravitySystem.RemoveGravityReceiver(this);
             GravitySystem.OnNewGravitySource -= NewGravitySource;
             GravitySystem.OnDestroyedGravitySource -= DestroyedGravitySource;
 

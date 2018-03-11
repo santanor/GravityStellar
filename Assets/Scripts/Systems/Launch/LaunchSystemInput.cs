@@ -12,7 +12,6 @@ namespace LaunchSystem
 
         public delegate void LaunchProcessEvent( Vector2 screenPos, Vector3 worldPos );
 
-
         public InputManager InputManager;
         public LaunchProcessEvent OnLaunchProcessDrag;
         public LaunchProcessEvent OnLaunchProcessFinish;
@@ -31,7 +30,8 @@ namespace LaunchSystem
 
         void OnTouchFinish( Vector2 screenpos, Vector2 worldpos )
         {
-            if (SelectSystem.HasItemsSelected())
+            if (SelectSystem.HasItemsSelected()
+                && SelectSystem.Status == global::SelectSystem.SelectSystem.StatusEnum.Idle)
             {
                 OnLaunchProcessFinish?.Invoke(screenpos, worldpos);
             }

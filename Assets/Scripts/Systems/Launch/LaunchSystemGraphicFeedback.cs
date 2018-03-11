@@ -43,8 +43,6 @@ namespace LaunchSystem
             var dst = Vector2.Distance(worldpos, _initialLaunchPos);
 
             //TODO Make this piece of crap right.
-
-            //var dir = (_initialLaunchPos - (Vector2)worldpos).normalized;
             var pos = _ArrowSpriteGO.transform.localPosition;
             pos.z = dst/2;
             _ArrowSpriteGO.transform.localPosition = pos;
@@ -53,7 +51,7 @@ namespace LaunchSystem
         }
 
         /// <summary>
-        ///     Simply hides the arrow when the finger lifts up
+        ///  Simply hides the arrow when the finger lifts up
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>

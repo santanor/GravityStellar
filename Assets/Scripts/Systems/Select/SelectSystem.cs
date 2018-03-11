@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using InputSystem;
@@ -76,6 +77,12 @@ namespace SelectSystem
         /// <param name="worldpo"></param>
         void OnSelectStop( Vector2 screenpos, Vector2 worldpo )
         {
+            StartCoroutine(DelayedSelectStop());
+        }
+
+        IEnumerator DelayedSelectStop()
+        {
+            yield return null;
             Status = StatusEnum.Idle;
         }
 
