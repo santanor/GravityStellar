@@ -5,20 +5,17 @@ namespace LaunchSystem
     public class LaunchSystemGraphicFeedback : MonoBehaviour
     {
         Vector2 _initialLaunchPos;
-        SpriteRenderer _sprite;
+        LineRenderer _lineRenderer;
         public GameObject Arrow;
-        GameObject _ArrowSpriteGO;
         public LaunchSystem LaunchSystem;
         public LaunchSystemInput SystemInput;
 
         void Awake()
         {
-            _sprite = Arrow.GetComponentInChildren<SpriteRenderer>();
+            _lineRenderer = Arrow.GetComponentInChildren<LineRenderer>();
             SystemInput.OnLaunchProcessStart += BeginShowingArrow;
             SystemInput.OnLaunchProcessDrag += UpdateArrow;
             SystemInput.OnLaunchProcessFinish += StopShowingArrow;
-
-            _ArrowSpriteGO = Arrow.transform.GetChild(0).gameObject;
         }
 
         void OnDestroy()
@@ -39,15 +36,8 @@ namespace LaunchSystem
             Arrow.transform.LookAt(_initialLaunchPos);
             Arrow.transform.position = worldpos;
 
-            //Get the distance from the finger to the initial pos
-            var dst = Vector2.Distance(worldpos, _initialLaunchPos);
-
-            //TODO Make this piece of crap right.
-            var pos = _ArrowSpriteGO.transform.localPosition;
-            pos.z = dst/2;
-            _ArrowSpriteGO.transform.localPosition = pos;
-
-            _sprite.size = new Vector2(dst, 0.3f);
+            _lineRenderer.SetPositions(new [] {worldpos, (Vector3)_initialLaunchPos});
+            _lineRenderer.positionCount = 2;
         }
 
         /// <summary>
@@ -69,7 +59,6 @@ namespace LaunchSystem
         void BeginShowingArrow( Vector2 screenpos, Vector3 worldpos )
         {
             _initialLaunchPos = worldpos;
-            _sprite.size = Vector2.zero;
             Arrow.SetActive(true);
         }
 
