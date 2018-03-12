@@ -12,7 +12,7 @@ namespace LaunchSystem
     public class LaunchSystem : MonoBehaviour
     {
         public LaunchSystemInput SystemInput;
-        public GravitySystem.GravitySystem GravitySystem;
+        public SelectSystem.SelectSystem SelectSystem;
 
         [Tooltip("Max force to be applied")]
         public float MaxForce = 3;
@@ -51,32 +51,12 @@ namespace LaunchSystem
 
             //Find All the dots
             //Now for each selected selectable apply the force on the desired direction
-            foreach (var s in FindSelectedDots())
+            foreach (var s in SelectSystem.GetSelected())
             {
                 s.Rigidbody2D.AddForce(dir * force);
                 s.Selectable.Deselect();
             }
         }
-
-
-        /// <summary>
-        /// Finds a list of dots from the gravity receivers from the gravity system
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<Dot> FindSelectedDots()
-        {
-            var selectedDots = new List<Dot>();
-            foreach (var gs in GravitySystem.GravityReceivers)
-            {
-                var dot = gs as Dot;
-                if (dot != null && dot.Selectable.Status == Selectable.StatusEnum.Selected)
-                {
-                    selectedDots.Add(dot);
-                }
-            }
-            return selectedDots;
-        }
-
 
         /// <summary>
         /// Saves the initial position so that we can calculate the distance and the force

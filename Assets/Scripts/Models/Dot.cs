@@ -11,8 +11,6 @@ namespace Models
         Vector2 _dDir;
         Vector2 _vDir;
 
-        public Color IdleColor;
-
         [Tooltip("Horizontal force magnitude")]
         public float InitialOrbitDeltaForce;
 
@@ -21,39 +19,7 @@ namespace Models
 
         [Tooltip("Vertical force magnitude")] public float InitialOrbitVertialForce;
 
-        public Light Light;
         public Star ParentStar;
-
-        public Selectable Selectable;
-        public Color SelectedColor;
-
-        void Awake()
-        {
-            Assert.IsNotNull(Selectable);
-            Assert.IsNotNull(Light);
-
-            Selectable.OnSelectedStatusChanged += OnSelectedStatusChanged;
-        }
-
-        /// <summary>
-        ///     Changes the color of the lights indicating whether an item it's selected or not
-        /// </summary>
-        /// <param name="oldstatus"></param>
-        /// <param name="newstatus"></param>
-        void OnSelectedStatusChanged( Selectable.StatusEnum oldstatus, Selectable.StatusEnum newstatus )
-        {
-            switch (newstatus)
-            {
-                case Selectable.StatusEnum.Selected:
-                    Light.color = SelectedColor;
-                    break;
-                case Selectable.StatusEnum.Idle:
-                    Light.color = IdleColor;
-                    break;
-                default:
-                    break;
-            }
-        }
 
         protected override void OnDotTooClose()
         {
