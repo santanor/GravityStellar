@@ -1,24 +1,22 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace LaunchSystem
 {
     public class LaunchSystemGraphicFeedback : MonoBehaviour
     {
         Vector2 _initialLaunchPos;
-        SpriteRenderer _sprite;
+        LineRenderer _lineRenderer;
         public GameObject Arrow;
-        GameObject _ArrowSpriteGO;
         public LaunchSystem LaunchSystem;
         public LaunchSystemInput SystemInput;
 
         void Awake()
         {
-            _sprite = Arrow.GetComponentInChildren<SpriteRenderer>();
+            _lineRenderer = Arrow.GetComponentInChildren<LineRenderer>();
             SystemInput.OnLaunchProcessStart += BeginShowingArrow;
             SystemInput.OnLaunchProcessDrag += UpdateArrow;
             SystemInput.OnLaunchProcessFinish += StopShowingArrow;
-
-            _ArrowSpriteGO = Arrow.transform.GetChild(0).gameObject;
         }
 
         void OnDestroy()
@@ -30,24 +28,31 @@ namespace LaunchSystem
 
         /// <summary>
         ///  Make the arrow look in the direction created from the initial pos and the current finger pos
+        ///  but clampped to the max distance defined in the LaunchSystem
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
         void UpdateArrow( Vector2 screenpos, Vector3 worldpos )
         {
-            //By doing this we can then only extrude the sprite in the "width"
             Arrow.transform.LookAt(_initialLaunchPos);
             Arrow.transform.position = worldpos;
 
-            //Get the distance from the finger to the initial pos
-            var dst = Vector2.Distance(worldpos, _initialLaunchPos);
-
-            //TODO Make this piece of crap right.
-            var pos = _ArrowSpriteGO.transform.localPosition;
-            pos.z = dst/2;
-            _ArrowSpriteGO.transform.localPosition = pos;
-
-            _sprite.size = new Vector2(dst, 0.3f);
+            //It means there will be no more force even if the finger is even more further away
+            //So what we do is clamp the arrow to be the max size
+            if (Vector3.Distance((Vector3) _initialLaunchPos, worldpos) > LaunchSystem.MaxDistanceForForce)
+            {
+                //To do that we find the direction from the finger to the initial pos
+                //Add that direction to the initial position
+                //Multiply that by the max distance
+                var dir = ( _initialLaunchPos - (Vector2) worldpos ).normalized;
+                var pos = _initialLaunchPos - dir * LaunchSystem.MaxDistanceForForce;
+                _lineRenderer.SetPositions(new Vector3[] {pos, _initialLaunchPos});
+            }
+            else
+            {
+                _lineRenderer.SetPositions(new [] {worldpos, (Vector3)_initialLaunchPos});
+            }
+            _lineRenderer.positionCount = 2;
         }
 
         /// <summary>
@@ -69,13 +74,7 @@ namespace LaunchSystem
         void BeginShowingArrow( Vector2 screenpos, Vector3 worldpos )
         {
             _initialLaunchPos = worldpos;
-            _sprite.size = Vector2.zero;
             Arrow.SetActive(true);
-        }
-
-        void OnDrawGizmos()
-        {
-            Gizmos.DrawSphere(_initialLaunchPos, 0.1f);
         }
     }
 }
