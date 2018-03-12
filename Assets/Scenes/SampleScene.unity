@@ -172,6 +172,11 @@ Prefab:
       propertyPath: MaxForce
       value: 200
       objectReference: {fileID: 0}
+    - target: {fileID: 114056615091593666, guid: b8a876b47be58ae42a3d845b74d3316d,
+        type: 2}
+      propertyPath: LaunchSystem
+      value: 
+      objectReference: {fileID: 567345483}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b8a876b47be58ae42a3d845b74d3316d, type: 2}
   m_IsPrefabParent: 0
@@ -301,6 +306,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &567345483 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114339399507129474, guid: b8a876b47be58ae42a3d845b74d3316d,
+    type: 2}
+  m_PrefabInternal: {fileID: 184251718}
+  m_Script: {fileID: 11500000, guid: 5832c4843b27477885fd7909258121fb, type: 3}
 --- !u!1001 &631602081
 Prefab:
   m_ObjectHideFlags: 0
