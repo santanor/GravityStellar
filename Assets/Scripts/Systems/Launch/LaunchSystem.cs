@@ -42,7 +42,7 @@ namespace LaunchSystem
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
-        void Launch( Vector2 screenpos, Vector3 worldpos )
+        void Launch( Vector2 screenpos, Vector2 worldpos )
         {
             //Get the force clamped to the max force;
             var dst = Mathf.Clamp(Vector3.Distance(worldpos, _initialLaunchPos), 0, MaxDistanceForForce);
@@ -84,7 +84,7 @@ namespace LaunchSystem
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
-        void LaunchProcessStart( Vector2 screenpos, Vector3 worldpos )
+        void LaunchProcessStart( Vector2 screenpos, Vector2 worldpos )
         {
             _initialLaunchPos = worldpos;
         }

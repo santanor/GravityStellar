@@ -10,7 +10,7 @@ namespace LaunchSystem
     {
         public delegate void LaunchEvent( Vector2 direction, float distanceFromOrigin );
 
-        public delegate void LaunchProcessEvent( Vector2 screenPos, Vector3 worldPos );
+        public delegate void LaunchProcessEvent( Vector2 screenPos, Vector2 worldPos );
 
         public InputManager InputManager;
         public LaunchProcessEvent OnLaunchProcessDrag;

@@ -32,7 +32,7 @@ namespace LaunchSystem
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
-        void UpdateArrow( Vector2 screenpos, Vector3 worldpos )
+        void UpdateArrow( Vector2 screenpos, Vector2 worldpos )
         {
             Arrow.transform.LookAt(_initialLaunchPos);
             Arrow.transform.position = worldpos;
@@ -50,7 +50,7 @@ namespace LaunchSystem
             }
             else
             {
-                _lineRenderer.SetPositions(new [] {worldpos, (Vector3)_initialLaunchPos});
+                _lineRenderer.SetPositions(new Vector3[] {worldpos, _initialLaunchPos});
             }
             _lineRenderer.positionCount = 2;
         }
@@ -60,7 +60,7 @@ namespace LaunchSystem
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
-        void StopShowingArrow( Vector2 screenpos, Vector3 worldpos )
+        void StopShowingArrow( Vector2 screenpos, Vector2 worldpos )
         {
             Arrow.SetActive(false);
         }
@@ -71,7 +71,7 @@ namespace LaunchSystem
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
-        void BeginShowingArrow( Vector2 screenpos, Vector3 worldpos )
+        void BeginShowingArrow( Vector2 screenpos, Vector2 worldpos )
         {
             _initialLaunchPos = worldpos;
             Arrow.SetActive(true);
