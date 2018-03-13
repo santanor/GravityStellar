@@ -8,8 +8,8 @@ namespace Models
 {
     public class Dot : GravityReceiver
     {
-        Vector2 _dDir;
-        Vector2 _vDir;
+        Vector2 dDir;
+        Vector2 vDir;
 
         [Tooltip("Horizontal force magnitude")]
         public float InitialOrbitDeltaForce;
@@ -31,12 +31,12 @@ namespace Models
         /// </summary>
         public void InitialOrbitKick()
         {
-            _vDir = ( Random.insideUnitCircle - (Vector2) ParentStar.transform.position ).normalized;
-            _dDir = ( (Vector2) Vector3.Cross(Vector3.forward, _vDir) ).normalized;
+            vDir = ( Random.insideUnitCircle - (Vector2) ParentStar.transform.position ).normalized;
+            dDir = ( (Vector2) Vector3.Cross(Vector3.forward, vDir) ).normalized;
 
             //Perform an initial kick to move it from (0,0,0)
-            Rigidbody2D.AddForce(_vDir);
-            Rigidbody2D.AddForce(_dDir);
+            Rigidbody2D.AddForce(vDir);
+            Rigidbody2D.AddForce(dDir);
 
             StartCoroutine(OrbitalKickRoutine());
         }
@@ -54,15 +54,15 @@ namespace Models
                 transform.LookAt(ParentStar.transform.position);
 
                 //Get the new up direction vector
-                _vDir = -transform.forward;
-                _dDir = ( (Vector2) Vector3.Cross(Vector3.forward, _vDir) ).normalized;
+                vDir = -transform.forward;
+                dDir = ( (Vector2) Vector3.Cross(Vector3.forward, vDir) ).normalized;
 
                 //Lerps the forces giving more force towards the vertical direction at the begining
                 //And more horizontal force at the end
                 var vLerped = Mathf.Lerp(InitialOrbitVertialForce, 0, ticker / InitialOrbitKickDuration);
                 var dLerped = Mathf.Lerp(0, InitialOrbitDeltaForce, ticker / InitialOrbitKickDuration);
-                Rigidbody2D.AddForce(_vDir * vLerped);
-                Rigidbody2D.AddForce(_dDir * dLerped);
+                Rigidbody2D.AddForce(vDir * vLerped);
+                Rigidbody2D.AddForce(dDir * dLerped);
 
                 ticker += Time.deltaTime;
                 yield return null;

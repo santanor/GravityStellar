@@ -137,21 +137,6 @@ namespace SelectSystem
         }
 
         /// <summary>
-        /// Returns whether there are items selected
-        /// </summary>
-        /// <returns></returns>
-        public bool HasItemsSelected()
-        {
-            for (var i = 0; i < Selectables.Count; i++)
-            {
-                if (Selectables[i].Status == Selectable.StatusEnum.Selected)
-                    return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
         /// Get the "Selectables" selected by the user
         /// </summary>
         /// <returns></returns>

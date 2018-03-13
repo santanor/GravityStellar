@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using GravitySystem;
 using Models;
+using Runtime_sets;
 using SelectSystem;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -12,14 +14,14 @@ namespace LaunchSystem
     public class LaunchSystem : MonoBehaviour
     {
         public LaunchSystemInput SystemInput;
-        public SelectSystem.SelectSystem SelectSystem;
+        public SelectedDotsSet SelectedDotsSet;
 
         [Tooltip("Max force to be applied")]
         public float MaxForce = 3;
         [Tooltip("Defines the max distance that matches with the max force. ")]
         public float MaxDistanceForForce = 3;
 
-        Vector2 _initialLaunchPos;
+        Vector2 initialLaunchPos;
 
 
         void Awake()
@@ -45,16 +47,16 @@ namespace LaunchSystem
         void Launch( Vector2 screenpos, Vector2 worldpos )
         {
             //Get the force clamped to the max force;
-            var dst = Mathf.Clamp(Vector3.Distance(worldpos, _initialLaunchPos), 0, MaxDistanceForForce);
+            var dst = Mathf.Clamp(Vector3.Distance(worldpos, initialLaunchPos), 0, MaxDistanceForForce);
             var force = Mathf.Clamp((MaxForce * dst)/MaxDistanceForForce , 0, MaxForce);//Get the force clammped
-            var dir = (_initialLaunchPos - (Vector2)worldpos).normalized;
+            var dir = (initialLaunchPos - worldpos).normalized;
 
-            //Find All the dots
-            //Now for each selected selectable apply the force on the desired direction
-            foreach (var s in SelectSystem.GetSelected())
+            //Iterate over the collection this way because calling "Deselect" will remove the item from it
+            //This way we avoid running into issues if we use a foreach
+            while(SelectedDotsSet.Items.Count > 0)
             {
-                s.Rigidbody2D.AddForce(dir * force);
-                s.Selectable.Deselect();
+                SelectedDotsSet.Items[0].Key.gameObject.GetComponent<GravityReceiver>().Rigidbody2D.AddForce(dir * force);
+                SelectedDotsSet.Items[0].Value.Deselect();
             }
         }
 
@@ -66,7 +68,7 @@ namespace LaunchSystem
         /// <param name="worldpos"></param>
         void LaunchProcessStart( Vector2 screenpos, Vector2 worldpos )
         {
-            _initialLaunchPos = worldpos;
+            initialLaunchPos = worldpos;
         }
     }
 }
