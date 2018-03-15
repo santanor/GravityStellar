@@ -8,6 +8,7 @@ public class GravitySource : MonoBehaviour
     public GravityPulseEvent OnGravityPulse;
     public float PullForce = 1f;
     public GravitySystem.GravitySystem GravitySystem;
+    public float InfluenceAreaRadius;
 
     void Awake()
     {

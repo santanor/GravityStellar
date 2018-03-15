@@ -78,7 +78,7 @@ namespace GravitySystem
             {
                 var force = pullforce * pullDirection.normalized / magsqr;
                 Rigidbody2D.AddForce(force, ForceMode2D.Force);
-                var clampedVelocity = Mathf.Clamp(Rigidbody2D.velocity.magnitude, 0, 3);
+                //var clampedVelocity = Mathf.Clamp(Rigidbody2D.velocity.magnitude, 0, 5);
                 //Rigidbody2D.velocity = Rigidbody2D.velocity.normalized * clampedVelocity;
             }
         }
