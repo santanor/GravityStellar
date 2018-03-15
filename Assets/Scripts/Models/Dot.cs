@@ -8,6 +8,8 @@ namespace Models
 {
     public class Dot : GravityReceiver
     {
+        public delegate void DotEvent(Dot dot, Rigidbody2D rigidbody2D);
+
         Vector2 dDir;
         Vector2 vDir;
 
@@ -20,10 +22,55 @@ namespace Models
         [Tooltip("Vertical force magnitude")] public float InitialOrbitVertialForce;
 
         public Star ParentStar;
+        public DotEvent OnDotDestroyed;
 
-        protected override void OnDotTooClose()
+        /// <summary>
+        /// Only true when a dot is being destroyed
+        /// </summary>
+        bool isBeingDestroyed;
+
+        Rigidbody2D beingDestroyedRigibodySnapshot;
+
+        /// <summary>
+        /// When the dot is too close to a gravitySource
+        /// </summary>
+        /// <param name="source"></param>
+        protected override void OnDotTooClose( GravitySource source )
         {
-            base.OnDotTooClose();
+            base.OnDotTooClose(source);
+
+
+            //If the source is a Dot then we display the colision particles and destroy the Dot.
+            if (source.GetComponent<Dot>() && !isBeingDestroyed)
+            {
+                //Routine to destroy a dot
+                beingDestroyedRigibodySnapshot = Rigidbody2D;
+                StartCoroutine(DestroyDotRoutine(source));
+            }
+
+        }
+
+        /// <summary>
+        /// Procedure to destroy a dot.
+        /// Skip a couple of frames to get the dots super close
+        /// Points the transforms to the right place
+        /// And pum! Destroy
+        /// </summary>
+        /// <returns></returns>
+        // ReSharper disable once SuggestBaseTypeForParameter
+        IEnumerator DestroyDotRoutine(GravitySource source )
+        {
+            isBeingDestroyed = true;
+            transform.forward = Rigidbody2D.velocity.normalized;
+            //transform.position = source.transform.position;
+            yield return null;
+            Destroy(gameObject);
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            OnDotDestroyed?.Invoke(this, beingDestroyedRigibodySnapshot);
         }
 
         /// <summary>

@@ -29,7 +29,7 @@ namespace GravitySystem
             }
         }
 
-        void OnDestroy()
+        protected virtual void OnDestroy()
         {
             GravitySystem.RemoveGravityReceiver(this);
             GravitySystem.OnNewGravitySource -= NewGravitySource;
@@ -55,10 +55,14 @@ namespace GravitySystem
         /// <summary>
         ///     Applies the different gravity forces onto the current element
         /// </summary>
+        /// <param name="source"></param>
         /// <param name="sourcepoint"></param>
         /// <param name="pullforce"></param>
-        void OnGravityPulse( Vector3 sourcepoint, float pullforce )
+        void OnGravityPulse( GravitySource source, Vector3 sourcepoint, float pullforce )
         {
+            //If the object is further away, just ignore the pulse
+            if (Vector2.Distance(transform.position, sourcepoint) > source.InfluenceAreaRadius) return;
+
             //get the offset between the objects
             var pullDirection = sourcepoint - transform.position;
 
@@ -72,7 +76,7 @@ namespace GravitySystem
             //note the force is applied as an acceleration, as acceleration created by gravity is independent of the mass of the object
             if (magsqr <= TooCloseDistance)
             {
-                OnDotTooClose();
+                OnDotTooClose(source);
             }
             else
             {
@@ -89,7 +93,7 @@ namespace GravitySystem
         }
 
 
-        protected virtual void OnDotTooClose()
+        protected virtual void OnDotTooClose( GravitySource source )
         {
         }
     }

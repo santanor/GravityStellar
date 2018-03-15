@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 4809398800540484}
   - component: {fileID: 198584824900982790}
   - component: {fileID: 199441146179771180}
+  - component: {fileID: 114974915786930684}
   m_Layer: 0
   m_Name: ExplodeParticles
   m_TagString: Untagged
@@ -70,13 +71,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1393355955574606}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4038501490416994}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &50306046801348614
 Rigidbody2D:
   serializedVersion: 4
@@ -206,9 +207,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef6a945494084f34db23250b409a7235, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PullForce: 10
+  PullForce: 20
   GravitySystem: {fileID: 11400000, guid: a4565f78ce2411142b407c40b4e6375c, type: 2}
-  InfluenceAreaRadius: 0
+  InfluenceAreaRadius: 2
+--- !u!114 &114974915786930684
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1393355955574606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a1180d0217b4bee9e1d378703aa6b3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Dot: {fileID: 114367208074325098}
+  ParticleSystem: {fileID: 198584824900982790}
 --- !u!198 &198584824900982790
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -219,7 +233,7 @@ ParticleSystem:
   lengthInSec: 0.5
   simulationSpeed: 1
   stopAction: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 0
   useUnscaledTime: 0
@@ -288,7 +302,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.5
+      scalar: 0.3
       minScalar: 5
       maxCurve:
         serializedVersion: 2
