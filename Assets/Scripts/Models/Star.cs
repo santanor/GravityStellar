@@ -8,19 +8,12 @@ namespace Models
         float _spawnTicker;
         public Dot DotPrefab;
         public IList<Dot> Dots;
-        public GravitySystem.GravitySystem GravitySystem;
         public float MaxSpawnRate;
         public float MinSpawnRate;
 
         void Start()
         {
             Dots = new List<Dot>();
-            GravitySystem.AddGravitySource(this);
-        }
-
-        void OnDestroy()
-        {
-            GravitySystem.DestroyGravitySource(this);
         }
 
         void Update()

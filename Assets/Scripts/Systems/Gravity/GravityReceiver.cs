@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace GravitySystem
 {
@@ -6,6 +7,11 @@ namespace GravitySystem
     {
         public GravitySystem GravitySystem;
         public Rigidbody2D Rigidbody2D;
+        [Tooltip("A list of tag names assigned to Gravity Sources to ignore")]
+        public string[] IgnoreGravitiesTags;
+
+        [Tooltip("What distance is too close form the source. it simulates a colision")]
+        public float TooCloseDistance = 0.06f;
 
         void Start()
         {
@@ -13,7 +19,14 @@ namespace GravitySystem
             GravitySystem.OnNewGravitySource += NewGravitySource;
             GravitySystem.OnDestroyedGravitySource += DestroyedGravitySource;
 
-            foreach (var gs in GravitySystem.GravitySources) gs.OnGravityPulse += OnGravityPulse;
+            foreach (var gs in GravitySystem.GravitySources)
+            {
+                //Only suscribe to the event if the gravitySource isn't ignored
+                if(!IgnoreGravitiesTags.Contains(gs.tag))
+                {
+                    gs.OnGravityPulse += OnGravityPulse;
+                }
+            }
         }
 
         void OnDestroy()
@@ -27,12 +40,15 @@ namespace GravitySystem
 
         void DestroyedGravitySource( GravitySource gs )
         {
-            gs.OnGravityPulse += OnGravityPulse;
+            gs.OnGravityPulse -= OnGravityPulse;
         }
 
         void NewGravitySource( GravitySource gs )
         {
-            gs.OnGravityPulse -= OnGravityPulse;
+            if (!IgnoreGravitiesTags.Contains(gs.tag))
+            {
+                gs.OnGravityPulse += OnGravityPulse;
+            }
         }
 
 
@@ -54,7 +70,7 @@ namespace GravitySystem
 
             //check distance is more than 0 (to avoid division by 0) and then apply a gravitational force to the object
             //note the force is applied as an acceleration, as acceleration created by gravity is independent of the mass of the object
-            if (magsqr <= 0.6f)
+            if (magsqr <= TooCloseDistance)
             {
                 OnDotTooClose();
             }
@@ -65,6 +81,11 @@ namespace GravitySystem
                 var clampedVelocity = Mathf.Clamp(Rigidbody2D.velocity.magnitude, 0, 3);
                 //Rigidbody2D.velocity = Rigidbody2D.velocity.normalized * clampedVelocity;
             }
+        }
+
+        void OnDrawGizmos()
+        {
+            Gizmos.DrawSphere(transform.position, TooCloseDistance);
         }
 
 

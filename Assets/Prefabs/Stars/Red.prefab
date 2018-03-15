@@ -112,9 +112,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PullForce: 4
-  DotPrefab: {fileID: 114367208074325098, guid: fea82505ca2a11949a0063a409ceb1fa,
-    type: 2}
   GravitySystem: {fileID: 11400000, guid: a4565f78ce2411142b407c40b4e6375c, type: 2}
+  DotPrefab: {fileID: 114849692016336142, guid: c9088fbca24010f4c8bc092efa951df4,
+    type: 2}
   MaxSpawnRate: 2
   MinSpawnRate: 5
 --- !u!212 &212000041546871812

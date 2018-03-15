@@ -22,9 +22,10 @@ GameObject:
   - component: {fileID: 108337036026821686}
   - component: {fileID: 114849692016336142}
   - component: {fileID: 50368589213567778}
+  - component: {fileID: 114812541770045424}
   m_Layer: 0
   m_Name: RedDot
-  m_TagString: Untagged
+  m_TagString: RedDot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -98,6 +99,19 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &114812541770045424
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1501810391001900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef6a945494084f34db23250b409a7235, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PullForce: 10
+  GravitySystem: {fileID: 11400000, guid: a4565f78ce2411142b407c40b4e6375c, type: 2}
 --- !u!114 &114849692016336142
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -111,11 +125,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GravitySystem: {fileID: 11400000, guid: a4565f78ce2411142b407c40b4e6375c, type: 2}
   Rigidbody2D: {fileID: 50368589213567778}
-  IdleColor: {r: 0.9215687, g: 0.2627451, b: 0.007843138, a: 1}
+  IgnoreGravitiesTags:
+  - RedDot
   InitialOrbitDeltaForce: 1.6
   InitialOrbitKickDuration: 2
   InitialOrbitVertialForce: 1.5
-  Light: {fileID: 108337036026821686}
   ParentStar: {fileID: 0}
-  Selectable: {fileID: 0}
-  SelectedColor: {r: 0.8018868, g: 0.5027247, b: 0.34420612, a: 0}

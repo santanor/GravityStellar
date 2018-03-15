@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 public class GravitySource : MonoBehaviour
 {
@@ -6,6 +7,18 @@ public class GravitySource : MonoBehaviour
 
     public GravityPulseEvent OnGravityPulse;
     public float PullForce = 1f;
+    public GravitySystem.GravitySystem GravitySystem;
+
+    void Awake()
+    {
+        Assert.IsNotNull(GravitySystem);
+        GravitySystem.AddGravitySource(this);
+    }
+
+    void OnDestroy()
+    {
+        GravitySystem.DestroyGravitySource(this);
+    }
 
     void FixedUpdate()
     {
