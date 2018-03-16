@@ -13,6 +13,11 @@ namespace LaunchSystem
 {
     public class LaunchSystem : MonoBehaviour
     {
+        //TODO refactor this to receive a new object (Launcheable?)
+        public delegate void LaunchEvent( Dot s );
+
+        public LaunchEvent OnSelectedDotLaunched;
+        
         public LaunchSystemInput SystemInput;
         public SelectedDotsSet SelectedDotsSet;
 
@@ -57,6 +62,7 @@ namespace LaunchSystem
             {
                 SelectedDotsSet.Items[0].Key.gameObject.GetComponent<GravityReceiver>().Rigidbody2D.AddForce(dir * force);
                 SelectedDotsSet.Items[0].Value.Deselect();
+                OnSelectedDotLaunched?.Invoke(SelectedDotsSet.Items[0].Key);
             }
         }
 

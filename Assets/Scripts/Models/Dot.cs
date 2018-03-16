@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using GravitySystem;
-using SelectSystem;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,10 +7,15 @@ namespace Models
 {
     public class Dot : GravityReceiver
     {
-        public delegate void DotEvent(Dot dot, Rigidbody2D rigidbody2D);
+        public delegate void DotDestroyedEvent( Dot dot, Vector2 deadVelocity, bool deadByColision );
 
         Vector2 dDir;
-        Vector2 vDir;
+
+        /// <summary>
+        ///     The velocity when the dot died. It's used as cache so that when the simulation stops
+        ///     we still know how fast it was going
+        /// </summary>
+        Vector2 dyingVelocity;
 
         [Tooltip("Horizontal force magnitude")]
         public float InitialOrbitDeltaForce;
@@ -21,56 +25,57 @@ namespace Models
 
         [Tooltip("Vertical force magnitude")] public float InitialOrbitVertialForce;
 
-        public Star ParentStar;
-        public DotEvent OnDotDestroyed;
-
         /// <summary>
-        /// Only true when a dot is being destroyed
+        ///     Only true when a dot is being destroyed
         /// </summary>
         bool isBeingDestroyed;
 
-        Rigidbody2D beingDestroyedRigibodySnapshot;
+        public LaunchSystem.LaunchSystem LaunchSystem;
+        public DotDestroyedEvent OnDotDestroyed;
+
+        public Star ParentStar;
+        Vector2 vDir;
+
+        void Awake()
+        {
+            Assert.IsNotNull(LaunchSystem);
+            LaunchSystem.OnSelectedDotLaunched += DotLaunched;
+        }
+
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            OnDotDestroyed?.Invoke(this, dyingVelocity, true);
+            LaunchSystem.OnSelectedDotLaunched -= DotLaunched;
+        }
 
         /// <summary>
-        /// When the dot is too close to a gravitySource
+        ///     This dot has been launched
+        ///     Start a death timer, which will kill the dot unless it colides first
+        /// </summary>
+        /// <param name="s"></param>
+        void DotLaunched( Dot s )
+        {
+        }
+
+        /// <summary>
+        ///     When the dot is too close to a gravitySource
         /// </summary>
         /// <param name="source"></param>
         protected override void OnDotTooClose( GravitySource source )
         {
             base.OnDotTooClose(source);
 
-
             //If the source is a Dot then we display the colision particles and destroy the Dot.
             if (source.GetComponent<Dot>() && !isBeingDestroyed)
             {
                 //Routine to destroy a dot
-                beingDestroyedRigibodySnapshot = Rigidbody2D;
-                StartCoroutine(DestroyDotRoutine(source));
+                dyingVelocity = Rigidbody2D.velocity;
+                isBeingDestroyed = true;
+                transform.forward = Rigidbody2D.velocity.normalized;
+                Destroy(gameObject, 0.01f); //Give it time to process the other dot
             }
-
-        }
-
-        /// <summary>
-        /// Procedure to destroy a dot.
-        /// Skip a couple of frames to get the dots super close
-        /// Points the transforms to the right place
-        /// And pum! Destroy
-        /// </summary>
-        /// <returns></returns>
-        // ReSharper disable once SuggestBaseTypeForParameter
-        IEnumerator DestroyDotRoutine(GravitySource source )
-        {
-            isBeingDestroyed = true;
-            transform.forward = Rigidbody2D.velocity.normalized;
-            //transform.position = source.transform.position;
-            yield return null;
-            Destroy(gameObject);
-        }
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            OnDotDestroyed?.Invoke(this, beingDestroyedRigibodySnapshot);
         }
 
         /// <summary>
