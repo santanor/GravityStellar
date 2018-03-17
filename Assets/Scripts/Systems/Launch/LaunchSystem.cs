@@ -17,7 +17,7 @@ namespace LaunchSystem
         public delegate void LaunchEvent( Dot s );
 
         public LaunchEvent OnSelectedDotLaunched;
-        
+
         public LaunchSystemInput SystemInput;
         public SelectedDotsSet SelectedDotsSet;
 
@@ -33,7 +33,7 @@ namespace LaunchSystem
         {
             Assert.IsNotNull(SystemInput);
             SystemInput.OnLaunchProcessFinish += Launch;
-            SystemInput.OnLaunchProcessStart -= LaunchProcessStart;
+            SystemInput.OnLaunchProcessStart += LaunchProcessStart;
         }
 
 

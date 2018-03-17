@@ -6,12 +6,13 @@ namespace Models
     public class DotDestroyedParticles : MonoBehaviour
     {
         public Dot Dot;
-        public ParticleSystem ParticleSystem;
+        public ParticleSystem CollisionDeadParticles;
+        public ParticleSystem TimeoutDeadParticles;
 
         void Awake()
         {
             Assert.IsNotNull(Dot);
-            Assert.IsNotNull(ParticleSystem);
+            Assert.IsNotNull(CollisionDeadParticles);
 
             Dot.OnDotDestroyed += DotDestroyed;
         }
@@ -21,16 +22,25 @@ namespace Models
         /// </summary>
         void DotDestroyed(Dot dot, Vector2 velocity, bool deadByColision )
         {
-            //Get the particle object and unparent it from the Dot so that we can destroy it and the
-            //Particles keep on executing
-            var main = ParticleSystem.main;
-            main.startSpeed = velocity.magnitude;
-            ParticleSystem.gameObject.transform.parent = null;
-            ParticleSystem.Play();
+            gameObject.transform.SetParent(null);
+            PlayParticleEffect(deadByColision ? CollisionDeadParticles : TimeoutDeadParticles, velocity);
 
             //Destroy in a bit to give it time to play the particles
-            Destroy(ParticleSystem.gameObject, 0.5f);
+            Destroy(gameObject, 2f);
+        }
 
+        /// <summary>
+        /// Plays the paticles for the chosen death (that is collision or timeout)
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="velocity"></param>
+        void PlayParticleEffect( ParticleSystem particles, Vector2 velocity)
+        {
+            //Get the particle object and unparent it from the Dot so that we can destroy it and the
+            //Particles keep on executing
+            var main = particles.main;
+            main.startSpeed = velocity.magnitude;
+            particles.Play();
         }
     }
 }

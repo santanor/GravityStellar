@@ -25,10 +25,15 @@ namespace Models
 
         [Tooltip("Vertical force magnitude")] public float InitialOrbitVertialForce;
 
+        [Tooltip("Time (In seconds) to destroy a Dot after its been launched")]
+        public float LaunchedDotDestroyDelay = 10f;
+
         /// <summary>
         ///     Only true when a dot is being destroyed
         /// </summary>
         bool isBeingDestroyed;
+
+        bool isDestroyedForColision;
 
         public LaunchSystem.LaunchSystem LaunchSystem;
         public DotDestroyedEvent OnDotDestroyed;
@@ -38,6 +43,7 @@ namespace Models
 
         void Awake()
         {
+            LaunchSystem = FindObjectOfType<LaunchSystem.LaunchSystem>();
             Assert.IsNotNull(LaunchSystem);
             LaunchSystem.OnSelectedDotLaunched += DotLaunched;
         }
@@ -46,7 +52,7 @@ namespace Models
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            OnDotDestroyed?.Invoke(this, dyingVelocity, true);
+            OnDotDestroyed?.Invoke(this, dyingVelocity, isDestroyedForColision);
             LaunchSystem.OnSelectedDotLaunched -= DotLaunched;
         }
 
@@ -57,6 +63,29 @@ namespace Models
         /// <param name="s"></param>
         void DotLaunched( Dot s )
         {
+            //Of course, only do this if the dot launched is the current one 
+            if (s == this)
+            {
+                ParentStar.OnGravityPulse -= OnGravityPulse;
+                StartCoroutine(DestroyDotRoutine());
+            }
+        }
+
+        /// <summary>
+        /// After the delay LaunchedDotDestroyDelay destroy the object
+        /// ONLY! if it hasn't been destroyed already
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator DestroyDotRoutine()
+        {
+            yield return new WaitForSeconds(LaunchedDotDestroyDelay);
+            if (!isBeingDestroyed)//Only destroy if it;s not being destroyed already
+            {
+                dyingVelocity = Rigidbody2D.velocity;
+                isBeingDestroyed = true;
+                transform.forward = Rigidbody2D.velocity.normalized;
+                Destroy(gameObject);
+            }
         }
 
         /// <summary>
@@ -74,6 +103,7 @@ namespace Models
                 dyingVelocity = Rigidbody2D.velocity;
                 isBeingDestroyed = true;
                 transform.forward = Rigidbody2D.velocity.normalized;
+                isDestroyedForColision = true;
                 Destroy(gameObject, 0.01f); //Give it time to process the other dot
             }
         }

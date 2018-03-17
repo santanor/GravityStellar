@@ -40,7 +40,11 @@ namespace GravitySystem
 
         void DestroyedGravitySource( GravitySource gs )
         {
+            //We're not going to accept gravity from the parent anymore
             gs.OnGravityPulse -= OnGravityPulse;
+
+            //And on top of that we'll give it a timer to the Dot to destroy itself (No colision)
+
         }
 
         void NewGravitySource( GravitySource gs )
@@ -58,7 +62,7 @@ namespace GravitySystem
         /// <param name="source"></param>
         /// <param name="sourcepoint"></param>
         /// <param name="pullforce"></param>
-        void OnGravityPulse( GravitySource source, Vector3 sourcepoint, float pullforce )
+        protected void OnGravityPulse( GravitySource source, Vector3 sourcepoint, float pullforce )
         {
             //If the object is further away, just ignore the pulse
             if (Vector2.Distance(transform.position, sourcepoint) > source.InfluenceAreaRadius) return;
