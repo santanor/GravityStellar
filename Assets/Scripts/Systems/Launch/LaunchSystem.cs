@@ -60,9 +60,11 @@ namespace LaunchSystem
             //This way we avoid running into issues if we use a foreach
             while(SelectedDotsSet.Items.Count > 0)
             {
-                SelectedDotsSet.Items[0].Key.gameObject.GetComponent<GravityReceiver>().Rigidbody2D.AddForce(dir * force);
-                SelectedDotsSet.Items[0].Value.Deselect();
+                var gr =SelectedDotsSet.Items[0].Key.gameObject.GetComponent<GravityReceiver>();
+                gr.Rigidbody2D.velocity = gr.Rigidbody2D.velocity /3;
+                gr.Rigidbody2D.AddForce(dir * force);
                 OnSelectedDotLaunched?.Invoke(SelectedDotsSet.Items[0].Key);
+                SelectedDotsSet.Items[0].Value.Deselect();
             }
         }
 

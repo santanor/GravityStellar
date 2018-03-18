@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using GravitySystem;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Random = UnityEngine.Random;
 
 namespace Models
 {
@@ -26,7 +28,8 @@ namespace Models
         [Tooltip("Vertical force magnitude")] public float InitialOrbitVertialForce;
 
         [Tooltip("Time (In seconds) to destroy a Dot after its been launched")]
-        public float LaunchedDotDestroyDelay = 10f;
+        public float LaunchedDotDestroyDelayMin = 7f;
+        public float LaunchedDotDestroyDelayMax = 10f;
 
         /// <summary>
         ///     Only true when a dot is being destroyed
@@ -63,7 +66,7 @@ namespace Models
         /// <param name="s"></param>
         void DotLaunched( Dot s )
         {
-            //Of course, only do this if the dot launched is the current one 
+            //Of course, only do this if the dot launched is the current one
             if (s == this)
             {
                 ParentStar.OnGravityPulse -= OnGravityPulse;
@@ -78,7 +81,7 @@ namespace Models
         /// <returns></returns>
         IEnumerator DestroyDotRoutine()
         {
-            yield return new WaitForSeconds(LaunchedDotDestroyDelay);
+            yield return new WaitForSeconds(Random.Range(LaunchedDotDestroyDelayMin, LaunchedDotDestroyDelayMax));
             if (!isBeingDestroyed)//Only destroy if it;s not being destroyed already
             {
                 dyingVelocity = Rigidbody2D.velocity;
@@ -100,11 +103,23 @@ namespace Models
             if (source.GetComponent<Dot>() && !isBeingDestroyed)
             {
                 //Routine to destroy a dot
+                ParentStar.Dots.Remove(this);
                 dyingVelocity = Rigidbody2D.velocity;
                 isBeingDestroyed = true;
                 transform.forward = Rigidbody2D.velocity.normalized;
                 isDestroyedForColision = true;
                 Destroy(gameObject, 0.01f); //Give it time to process the other dot
+            }
+
+            //If the source is a Star (And it's not a star owned by the player that owns the parent)
+            //Then destroy the dot and take damage from the star
+            var star = source.GetComponent<Star>();
+            if (star != null && !isBeingDestroyed && ParentStar.Owner != star.Owner)
+            {
+                isBeingDestroyed = true;
+                ParentStar.Dots.Remove(this);
+                star.TakeDamage(this);
+                Destroy(gameObject);
             }
         }
 
