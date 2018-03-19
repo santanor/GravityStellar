@@ -68,8 +68,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SystemInput: {fileID: 114763856923777208}
-  GravitySystem: {fileID: 11400000, guid: a4565f78ce2411142b407c40b4e6375c, type: 2}
-  MaxForce: 3
+  SelectedDotsSet: {fileID: 11400000, guid: 7e118d267a22b814a9d4ded5a909cc00, type: 2}
+  MaxForce: 2000
   MaxDistanceForForce: 3
 --- !u!114 &114763856923777208
 MonoBehaviour:
@@ -83,4 +83,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InputManager: {fileID: 0}
+  SelectedDotsSet: {fileID: 11400000, guid: 7e118d267a22b814a9d4ded5a909cc00, type: 2}
   SelectSystem: {fileID: 0}

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace GravitySystem
 {
@@ -6,6 +7,11 @@ namespace GravitySystem
     {
         public GravitySystem GravitySystem;
         public Rigidbody2D Rigidbody2D;
+        [Tooltip("A list of tag names assigned to Gravity Sources to ignore")]
+        public string[] IgnoreGravitiesTags;
+
+        [Tooltip("What distance is too close form the source. it simulates a colision")]
+        public float TooCloseDistance = 0.06f;
 
         void Start()
         {
@@ -13,10 +19,17 @@ namespace GravitySystem
             GravitySystem.OnNewGravitySource += NewGravitySource;
             GravitySystem.OnDestroyedGravitySource += DestroyedGravitySource;
 
-            foreach (var gs in GravitySystem.GravitySources) gs.OnGravityPulse += OnGravityPulse;
+            foreach (var gs in GravitySystem.GravitySources)
+            {
+                //Only suscribe to the event if the gravitySource isn't ignored
+                if(!IgnoreGravitiesTags.Contains(gs.tag))
+                {
+                    gs.OnGravityPulse += OnGravityPulse;
+                }
+            }
         }
 
-        void OnDestroy()
+        protected virtual void OnDestroy()
         {
             GravitySystem.RemoveGravityReceiver(this);
             GravitySystem.OnNewGravitySource -= NewGravitySource;
@@ -27,22 +40,33 @@ namespace GravitySystem
 
         void DestroyedGravitySource( GravitySource gs )
         {
-            gs.OnGravityPulse += OnGravityPulse;
+            //We're not going to accept gravity from the parent anymore
+            gs.OnGravityPulse -= OnGravityPulse;
+
+            //And on top of that we'll give it a timer to the Dot to destroy itself (No colision)
+
         }
 
         void NewGravitySource( GravitySource gs )
         {
-            gs.OnGravityPulse -= OnGravityPulse;
+            if (!IgnoreGravitiesTags.Contains(gs.tag))
+            {
+                gs.OnGravityPulse += OnGravityPulse;
+            }
         }
 
 
         /// <summary>
         ///     Applies the different gravity forces onto the current element
         /// </summary>
+        /// <param name="source"></param>
         /// <param name="sourcepoint"></param>
         /// <param name="pullforce"></param>
-        void OnGravityPulse( Vector3 sourcepoint, float pullforce )
+        protected void OnGravityPulse( GravitySource source, Vector3 sourcepoint, float pullforce )
         {
+            //If the object is further away, just ignore the pulse
+            if (Vector2.Distance(transform.position, sourcepoint) > source.InfluenceAreaRadius) return;
+
             //get the offset between the objects
             var pullDirection = sourcepoint - transform.position;
 
@@ -54,21 +78,26 @@ namespace GravitySystem
 
             //check distance is more than 0 (to avoid division by 0) and then apply a gravitational force to the object
             //note the force is applied as an acceleration, as acceleration created by gravity is independent of the mass of the object
-            if (magsqr <= 0.6f)
+            if (magsqr <= TooCloseDistance)
             {
-                OnDotTooClose();
+                OnDotTooClose(source);
             }
             else
             {
                 var force = pullforce * pullDirection.normalized / magsqr;
                 Rigidbody2D.AddForce(force, ForceMode2D.Force);
-                var clampedVelocity = Mathf.Clamp(Rigidbody2D.velocity.magnitude, 0, 3);
+                //var clampedVelocity = Mathf.Clamp(Rigidbody2D.velocity.magnitude, 0, 5);
                 //Rigidbody2D.velocity = Rigidbody2D.velocity.normalized * clampedVelocity;
             }
         }
 
+        void OnDrawGizmos()
+        {
+            Gizmos.DrawSphere(transform.position, TooCloseDistance);
+        }
 
-        protected virtual void OnDotTooClose()
+
+        protected virtual void OnDotTooClose( GravitySource source )
         {
         }
     }

@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using GravitySystem;
 using Models;
+using Runtime_sets;
 using SelectSystem;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -11,22 +13,27 @@ namespace LaunchSystem
 {
     public class LaunchSystem : MonoBehaviour
     {
+        //TODO refactor this to receive a new object (Launcheable?)
+        public delegate void LaunchEvent( Dot s );
+
+        public LaunchEvent OnSelectedDotLaunched;
+
         public LaunchSystemInput SystemInput;
-        public GravitySystem.GravitySystem GravitySystem;
+        public SelectedDotsSet SelectedDotsSet;
 
         [Tooltip("Max force to be applied")]
         public float MaxForce = 3;
         [Tooltip("Defines the max distance that matches with the max force. ")]
         public float MaxDistanceForForce = 3;
 
-        Vector2 _initialLaunchPos;
+        Vector2 initialLaunchPos;
 
 
         void Awake()
         {
             Assert.IsNotNull(SystemInput);
             SystemInput.OnLaunchProcessFinish += Launch;
-            SystemInput.OnLaunchProcessStart -= LaunchProcessStart;
+            SystemInput.OnLaunchProcessStart += LaunchProcessStart;
         }
 
 
@@ -42,41 +49,24 @@ namespace LaunchSystem
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
-        void Launch( Vector2 screenpos, Vector3 worldpos )
+        void Launch( Vector2 screenpos, Vector2 worldpos )
         {
             //Get the force clamped to the max force;
-            var dst = Mathf.Clamp(Vector3.Distance(worldpos, _initialLaunchPos), 0, MaxDistanceForForce);
+            var dst = Mathf.Clamp(Vector3.Distance(worldpos, initialLaunchPos), 0, MaxDistanceForForce);
             var force = Mathf.Clamp((MaxForce * dst)/MaxDistanceForForce , 0, MaxForce);//Get the force clammped
-            var dir = (_initialLaunchPos - (Vector2)worldpos).normalized;
+            var dir = (initialLaunchPos - worldpos).normalized;
 
-            //Find All the dots
-            //Now for each selected selectable apply the force on the desired direction
-            foreach (var s in FindSelectedDots())
+            //Iterate over the collection this way because calling "Deselect" will remove the item from it
+            //This way we avoid running into issues if we use a foreach
+            while(SelectedDotsSet.Items.Count > 0)
             {
-                s.Rigidbody2D.AddForce(dir * force);
-                s.Selectable.Deselect();
+                var gr =SelectedDotsSet.Items[0].Key.gameObject.GetComponent<GravityReceiver>();
+                gr.Rigidbody2D.velocity = gr.Rigidbody2D.velocity /3;
+                gr.Rigidbody2D.AddForce(dir * force);
+                OnSelectedDotLaunched?.Invoke(SelectedDotsSet.Items[0].Key);
+                SelectedDotsSet.Items[0].Value.Deselect();
             }
         }
-
-
-        /// <summary>
-        /// Finds a list of dots from the gravity receivers from the gravity system
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<Dot> FindSelectedDots()
-        {
-            var selectedDots = new List<Dot>();
-            foreach (var gs in GravitySystem.GravityReceivers)
-            {
-                var dot = gs as Dot;
-                if (dot != null && dot.Selectable.Status == Selectable.StatusEnum.Selected)
-                {
-                    selectedDots.Add(dot);
-                }
-            }
-            return selectedDots;
-        }
-
 
         /// <summary>
         /// Saves the initial position so that we can calculate the distance and the force
@@ -84,9 +74,9 @@ namespace LaunchSystem
         /// </summary>
         /// <param name="screenpos"></param>
         /// <param name="worldpos"></param>
-        void LaunchProcessStart( Vector2 screenpos, Vector3 worldpos )
+        void LaunchProcessStart( Vector2 screenpos, Vector2 worldpos )
         {
-            _initialLaunchPos = worldpos;
+            initialLaunchPos = worldpos;
         }
     }
 }

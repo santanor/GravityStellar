@@ -80,6 +80,10 @@ namespace SelectSystem
             StartCoroutine(DelayedSelectStop());
         }
 
+        /// <summary>
+        /// Used to leave a frame so that the system works correctly
+        /// </summary>
+        /// <returns></returns>
         IEnumerator DelayedSelectStop()
         {
             yield return null;
@@ -133,18 +137,20 @@ namespace SelectSystem
         }
 
         /// <summary>
-        /// Returns whether there are items selected
+        /// Get the "Selectables" selected by the user
         /// </summary>
         /// <returns></returns>
-        public bool HasItemsSelected()
+        public IEnumerable<Selectable> GetSelected()
         {
-            for (var i = 0; i < Selectables.Count; i++)
+            var selected= new List<Selectable>();
+            foreach (var s in Selectables)
             {
-                if (Selectables[i].Status == Selectable.StatusEnum.Selected)
-                    return true;
+                if (s.Status == Selectable.StatusEnum.Selected)
+                {
+                    selected.Add(s);
+                }
             }
-
-            return false;
+            return selected;
         }
 
         /// <summary>
