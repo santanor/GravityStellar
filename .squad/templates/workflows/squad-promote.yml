@@ -31,6 +31,11 @@ jobs:
       - name: Fetch all branches
         run: git fetch --all
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Show current state (dry run info)
         run: |
           echo "=== dev HEAD ===" && git log origin/dev -1 --oneline
@@ -82,6 +87,11 @@ jobs:
 
       - name: Fetch all branches
         run: git fetch --all
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Show current state
         run: |
