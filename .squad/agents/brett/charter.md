@@ -37,8 +37,8 @@
 
 ## Model
 
-- **Preferred:** auto
-- **Rationale:** Coordinator selects the best model based on task type — cost first unless writing code
+- **Preferred:** claude-sonnet-4.5
+- **Rationale:** QA uses standard tier per user directive
 - **Fallback:** Standard chain — the coordinator handles fallback automatically
 
 ## Collaboration

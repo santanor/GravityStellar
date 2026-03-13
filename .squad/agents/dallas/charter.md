@@ -37,9 +37,9 @@
 
 ## Model
 
-- **Preferred:** auto
-- **Rationale:** Coordinator selects the best model based on task type — cost first unless writing code
-- **Fallback:** Standard chain — the coordinator handles fallback automatically
+- **Preferred:** claude-haiku-4.5
+- **Rationale:** Documentation uses fast tier per user directive
+- **Fallback:** Fast chain — the coordinator handles fallback automatically
 
 ## Collaboration
 
