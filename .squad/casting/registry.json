@@ -1,0 +1,52 @@
+{
+  "agents": {
+    "ripley": {
+      "persistent_name": "Ripley",
+      "universe": "Alien",
+      "role": "Tech Lead / Architect",
+      "created_at": "2026-03-13T22:05:37Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "kane": {
+      "persistent_name": "Kane",
+      "universe": "Alien",
+      "role": "Gameplay Programmer",
+      "created_at": "2026-03-13T22:05:37Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "lambert": {
+      "persistent_name": "Lambert",
+      "universe": "Alien",
+      "role": "Physics Programmer",
+      "created_at": "2026-03-13T22:05:37Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "parker": {
+      "persistent_name": "Parker",
+      "universe": "Alien",
+      "role": "Game Feel / UX Engineer",
+      "created_at": "2026-03-13T22:05:37Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "brett": {
+      "persistent_name": "Brett",
+      "universe": "Alien",
+      "role": "QA / Test Engineer",
+      "created_at": "2026-03-13T22:05:37Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "dallas": {
+      "persistent_name": "Dallas",
+      "universe": "Alien",
+      "role": "Documentation Engineer",
+      "created_at": "2026-03-13T22:05:37Z",
+      "legacy_named": false,
+      "status": "active"
+    }
+  }
+}
