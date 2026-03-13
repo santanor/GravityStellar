@@ -8,10 +8,6 @@ This project follows a strict small PR philosophy. Reviews should prioritize cla
 
 Pull requests must be small and atomic.
 
-Preferred limits:
-- Ideally <150 lines changed
-- Ideally <5 files modified
-
 If a PR appears to contain multiple concerns, request that the author split it into multiple PRs.
 
 Examples of acceptable PR scope:
