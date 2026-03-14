@@ -1,6 +1,0 @@
-chore: log csproj test exclusion fix
-
-Merged Ripley's decision on excluding test sources from ExportRelease builds.
-Created orchestration log for task completion.
-
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>

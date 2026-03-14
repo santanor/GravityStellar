@@ -265,3 +265,32 @@ Package exclusion and source exclusion must stay in sync. If a package is condit
 - ExportRelease builds no longer fail with missing type errors from test code
 - Test files are still compiled in Debug and other configurations (including `dotnet test`)
 - Future test files added under `test/` are automatically excluded from ExportRelease via the glob pattern
+
+---
+
+## CI Export Path Collection Strategy — 2026-03-14
+
+**Author:** Ripley (Tech Lead)  
+**Date:** 2026-03-14  
+**Status:** Enacted  
+**Branch:** `fix/ci-windows-export`
+
+### Context
+
+The `firebelley/godot-export@v7.0.0` action exports files to its internal directory (`~/.local/share/godot/builds/Windows Desktop/`) instead of respecting `use_preset_export_path: true`. The Godot signal 11 shutdown crash prevents the action's post-processing step from copying files to the preset path, and the `build_directory` output is empty.
+
+### Decision
+
+Instead of relying on the action to place files correctly, we collect them ourselves:
+
+1. **Remove `use_preset_export_path`** — it doesn't function when the crash prevents post-processing.
+2. **Add a "Collect Export Output" step** that searches the action's known internal build directories for the exported `.exe` and copies all artifacts to `build/windows/`.
+3. **Soften the `.pck` verification** — PCK may be embedded in the exe depending on export settings. Changed from hard fail to warning.
+4. **Remove dependency on `build_directory` output** — the action's output is unreliable when it crashes.
+
+### Consequences
+
+- CI build succeeds as long as Godot actually exports the files (even if it crashes afterward)
+- We're decoupled from the action's internal file placement logic
+- If `firebelley/godot-export` fixes the crash handling in a future version, this workaround can be simplified
+- The collect step provides detailed logging of where files were found, aiding future debugging
