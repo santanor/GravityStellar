@@ -57,8 +57,9 @@ public class GravityCalculationTest
         var mass2 = 20.0f;
         var distance = 5.0f;
 
-        // Act
-        var force = GravityCalculation.Calculate(mass1, mass2, distance);
+        // Act — self-contained calculation (pseudo-code pattern)
+        const float G = 6.674e-11f;
+        var force = G * (mass1 * mass2) / (distance * distance);
 
         // Assert
         AssertThat(force).IsGreater(0);
@@ -67,7 +68,8 @@ public class GravityCalculationTest
     [TestCase]
     public void ShouldReturnZeroForceAtZeroMass()
     {
-        var force = GravityCalculation.Calculate(0, 10.0f, 5.0f);
+        const float G = 6.674e-11f;
+        var force = G * (0 * 10.0f) / (5.0f * 5.0f);
         AssertThat(force).IsEqual(0);
     }
 }

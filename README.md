@@ -47,11 +47,11 @@ This runs all tests in the `test/` directory via the standard .NET test runner w
 
 ### Test Location
 
-All unit tests live in the `test/` directory at the project root. Test files use the naming convention `Test*.cs` (e.g., `TestPhysicsModel.cs`).
+All unit tests live in the `test/` directory at the project root. Test files use the naming convention `*Test.cs` (e.g., `PhysicsModelTest.cs`).
 
 ### CI Testing
 
-Every pull request automatically runs tests via GitHub Actions. See [CI/CD Overview](#cicd-overview) below.
+Every pull request automatically runs tests via GitHub Actions. See [CI/CD Pipeline](#cicd-pipeline) below.
 
 ## CI/CD Pipeline
 
@@ -73,9 +73,9 @@ If tests pass, a downloadable Windows build artifact is attached to the PR. You 
 - If all tests pass, moves to Stage 2
 
 **Stage 2: Build** (~5–10 min, or ~2–3 min with cache)
-- Runs on Windows
+- Runs on Ubuntu (Linux)
 - Downloads Godot 4.6 (or restores from cache)
-- Exports the project to a Windows `.exe`
+- Exports the project to a Windows `.exe` (cross-compilation)
 - Caches Godot binary and export templates for faster future builds
 - Uploads the `.exe` as a downloadable artifact
 
@@ -87,7 +87,7 @@ If tests pass, a downloadable Windows build artifact is attached to the PR. You 
 4. In the **Artifacts** section, download the Windows build
 5. Unzip and run `GravityStellar.exe`
 
-Artifacts are kept for **30 days**.
+Artifacts are kept for **14 days**.
 
 ### Workflow Details
 

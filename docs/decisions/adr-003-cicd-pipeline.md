@@ -51,7 +51,7 @@ We needed a CI/CD solution that integrates with GitHub, supports Godot 4, and re
 ### Artifact Upload
 - Developers and QA can download built artifacts from PR checks
 - No manual build steps needed for preview testing
-- Artifacts retain for 30 days (GitHub default)
+- Artifacts retain for 14 days
 
 ## Consequences
 
@@ -71,10 +71,10 @@ We needed a CI/CD solution that integrates with GitHub, supports Godot 4, and re
 
 **Workflow Structure:**
 ```
-On: pull_request / push to master
+On: pull_request to master
 ├─ test (runs on ubuntu-latest)
 │  └─ GdUnit4-action (runs GdUnit4Net tests)
-├─ build (runs on windows-latest, depends on test)
+├─ build (runs on ubuntu-latest, depends on test)
 │  ├─ actions/cache (restore Godot + templates)
 │  ├─ godot-export (build Windows preset)
 │  └─ actions/upload-artifact (attach .exe to PR)
@@ -86,8 +86,8 @@ On: pull_request / push to master
 - Export templates: keyed by Godot version + platform (e.g., `godot-v4.6-export-templates-windows`)
 
 **Artifact Upload:**
-- Path: `dist/windows/GravityStellar.exe`
-- Retention: 30 days (GitHub default, can be adjusted)
+- Path: `build/windows/GravityStellar.exe`
+- Retention: 14 days
 - Visible in: PR → Checks → build → Artifacts
 
 ## See Also

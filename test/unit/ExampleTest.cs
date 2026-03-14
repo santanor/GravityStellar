@@ -1,7 +1,7 @@
 using GdUnit4;
 using Godot;
 
-namespace GravityStellar.Tests;
+namespace GravityStellar.Tests.Unit;
 
 [TestSuite]
 public class ExampleTest

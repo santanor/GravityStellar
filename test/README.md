@@ -44,8 +44,9 @@ public class GravityTest
         float mass2 = 200f;
         float distance = 10f;
         
-        // Act
-        float force = GravityHelper.CalculateForce(mass1, mass2, distance);
+        // Act — self-contained calculation (no external dependency)
+        const float G = 6.674e-11f;
+        float force = G * (mass1 * mass2) / (distance * distance);
         
         // Assert
         Assertions.AssertThat(force).IsGreater(0f);

@@ -36,17 +36,17 @@ The workflow is defined in `.github/workflows/ci.yml` (or similar).
 ### Stage 2: Build
 
 **Job:** `build`  
-**Runs on:** Windows VM  
+**Runs on:** Ubuntu (Linux) VM  
 **Time:** ~5–10 minutes (first run), ~2–3 minutes (cached)  
 **Depends on:** `test` job must pass first
 
 **What happens:**
-1. GitHub checks out your PR branch on a Windows runner
+1. GitHub checks out your PR branch on an Ubuntu runner
 2. Cache layer attempts to restore cached Godot binary and export templates
    - If cache hit: Godot is already downloaded (~2 MB instead of 500 MB)
    - If cache miss: Godot binary and templates are downloaded and cached for future runs
 3. godot-export action exports the project using `export_presets.cfg`
-4. Windows executable is built to `dist/windows/GravityStellar.exe`
+4. Windows executable is built to `build/windows/GravityStellar.exe`
 5. `actions/upload-artifact` uploads the `.exe` so you can download it from the PR
 
 **Caching:**
@@ -68,7 +68,7 @@ The workflow is defined in `.github/workflows/ci.yml` (or similar).
 4. **Download:** Click the artifact name (e.g., `windows-build`) to download the `.zip`
 5. **Extract & Run:** Unzip and run `GravityStellar.exe`
 
-Artifacts are retained for **30 days** (GitHub default). You can adjust this in the workflow file if needed.
+Artifacts are retained for **14 days**. You can adjust this in the workflow file if needed.
 
 ## Local Testing vs CI
 
@@ -125,11 +125,11 @@ To export a new platform (Mac, Linux, Web, Android, etc.):
      runs-on: macos-latest  # Requires macOS runner
      steps:
        - uses: actions/checkout@v4
-       - uses: mshell/godot-export@v2
+       - uses: firebelley/godot-export@v6
          with:
-           godot_version: 4.6
-           export_preset: "macOS"
-           export_path: "dist/macos/"
+            godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_mono_macos.universal.zip
+            export_template_download_url: https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_mono_export_templates.tpz
+            relative_project_path: ./
    ```
 
 ## Troubleshooting
