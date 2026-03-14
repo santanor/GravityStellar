@@ -72,6 +72,8 @@ jobs:
             godot-${{ env.GODOT_VERSION }}-
 
       - name: Export Windows Build
+        id: export
+        continue-on-error: true
         uses: firebelley/godot-export@v7.0.0
         with:
           godot_executable_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_mono_linux_x86_64.zip
@@ -82,6 +84,15 @@ jobs:
           cache: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify Export Success
+        shell: bash
+        run: |
+          if [ ! -f "build/windows/GravityStellar.exe" ]; then
+            echo "ERROR: Export failed - GravityStellar.exe not found"
+            exit 1
+          fi
+          echo "Export completed successfully (signal 11 crash on shutdown is expected)"
 
       - name: Upload Windows Build
         uses: actions/upload-artifact@v4
