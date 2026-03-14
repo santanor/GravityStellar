@@ -24,6 +24,7 @@
 - I keep gameplay logic separate from physics calculations and rendering
 - Every feature starts with a clear issue describing the behavior
 - I prefer composition — attach behaviors as components, not inheritance chains
+- All my work goes on branches; I never commit directly to master or main.
 
 ## Boundaries
 
