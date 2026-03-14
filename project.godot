@@ -15,6 +15,10 @@ run/main_scene="uid://chul14ubnraav"
 config/features=PackedStringArray("4.6", "C#", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SimulationConfig="*res://Scripts/Physics/SimulationConfig.cs"
+
 [dotnet]
 
 project/assembly_name="GravityStellar"
