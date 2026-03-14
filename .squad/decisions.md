@@ -55,6 +55,32 @@
 
 **Purpose:** Captured for team memory and enforcement.
 
+### CI Export Reliability Strategy
+
+**Author:** Ripley (Tech Lead)  
+**Date:** 2026-03-14  
+**Status:** Enacted  
+**Branch:** `fix/ci-windows-export`
+
+**Context:** The CI Windows export step was failing with signal 11 (SIGSEGV) during Godot shutdown. Investigation revealed two issues:
+1. **Path mismatch:** `export_presets.cfg` had `Build/GravityStellar.exe` but CI upload expected `build/windows/`. Linux filesystem is case-sensitive, so `Build/` ≠ `build/`.
+2. **Godot shutdown crash:** Godot 4.x on headless Linux runners consistently crashes with signal 11 during shutdown AFTER the export completes successfully. This is a known issue with Godot on CI runners, not an actual export failure.
+
+**Decision:**
+1. Fix path consistency: Change export_path to `build/windows/GravityStellar.exe` to match CI upload expectations.
+2. Separate export success from process exit: Add `continue-on-error: true` to the export step, then add a verification step that checks if the exe exists. If the exe is present, the export succeeded despite the crash.
+3. Explicit failure on true errors: The verification step fails with a clear message if the exe is missing, distinguishing real failures from benign shutdown crashes.
+
+**Consequences:**
+- CI builds will pass despite signal 11 crashes, as long as the export artifacts exist
+- Clear separation between "export succeeded" (files present) and "process exited cleanly" (exit code 0)
+- Future maintainers understand signal 11 is expected behavior, not a regression
+- If Godot fixes the shutdown crash in future versions, the continue-on-error can be removed
+
+**Files Changed:**
+- `export_presets.cfg` — export_path corrected
+- `.github/workflows/ci.yml` — continue-on-error + verification step added
+
 ## Governance
 
 - All meaningful changes require team consensus
