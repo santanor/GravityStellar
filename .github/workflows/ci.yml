@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ci-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.6"
+  DOTNET_VERSION: "8.0.x"
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Run GdUnit4 C# Tests
+        uses: MikeSchulze/gdUnit4-action@v1
+        with:
+          godot-version: ${{ env.GODOT_VERSION }}
+          godot-status: "stable"
+          godot-net: true
+          version: "installed"
+          paths: "res://test"
+          timeout: 10
+          retries: 0
+          report-name: "test-results"
+
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: reports/
+
+  build:
+    name: Build Windows Export
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache Godot Export Templates
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/godot
+            ~/.config/godot
+          key: godot-${{ env.GODOT_VERSION }}-export-templates
+          restore-keys: |
+            godot-${{ env.GODOT_VERSION }}-
+
+      - name: Export Windows Build
+        uses: firebelley/godot-export@v6
+        with:
+          godot_executable_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_mono_linux_x86_64.zip
+          export_template_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_mono_export_templates.tpz
+          relative_project_path: ./
+          archive_output: false
+          export_debug: false
+          cache: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build-${{ github.event.pull_request.number }}
+          path: /home/runner/.local/share/godot/builds/Windows Desktop/
+          retention-days: 14
+          if-no-files-found: error
