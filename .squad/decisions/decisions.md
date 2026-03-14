@@ -181,3 +181,29 @@ Reviews must be concise, constructive, and specific — no vague feedback.
 ### Rationale
 
 Codifies user expectations and team review standards. Enables consistent, high-quality PR reviews aligned with gravity-stellar's architecture and physics game requirements.
+
+---
+
+## GitHub CLI Auth Workaround — 2026-03-14T22:53
+
+**By:** Jose (via Copilot)  
+**Status:** Active
+
+### Context
+
+All agents must manage GitHub CLI token scope when running write operations inside Copilot sessions.
+
+### Decision
+
+When calling `gh` CLI for write operations (`pr create`, `issue create`, etc.):
+1. Unset `GH_TOKEN` environment variable before the command
+2. This allows `gh` to fall back to keyring token with full `repo` scope
+3. Copilot-injected token lacks `repo` scope and causes silent failures
+
+### Rationale
+
+The MCP server injects a limited token into the environment. This token does not have write permissions. By unsetting it, `gh` CLI uses the authenticated keyring entry, which has full repository access.
+
+### Consequence
+
+All agents can reliably perform GitHub write operations. This pattern applies to any tooling that depends on GitHub authentication within Copilot sessions.
