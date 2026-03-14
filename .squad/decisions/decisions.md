@@ -48,6 +48,49 @@ Every PR gets automated testing before merge. Reviewers can download and play Wi
 
 ---
 
+## AI Ops & DevOps GitHub Issues Created — 2026-03-14
+
+**Author:** Ripley (Tech Lead)  
+**Status:** Enacted
+
+### Context
+
+The AI Ops & DevOps epic was previously planned and decomposed into 10 issues across 5 priority tiers (see above). The actual GitHub issues needed to be created on the `santanor/GravityStellar` repository with proper labels, descriptions, acceptance criteria, and squad assignments.
+
+### Decision
+
+Created Epic #72 and 10 sub-issues (#73–#82) with full descriptions, acceptance criteria, and dependency references:
+
+| # | Title | Priority | Squad |
+|---|-------|----------|-------|
+| 72 | [Epic] AI Ops & DevOps | — | — |
+| 73 | Set up GdUnit4Net testing framework | P1 | Brett |
+| 74 | Create export_presets.cfg for Windows Desktop | P1 | Ripley |
+| 75 | Create CI/CD pipeline — GitHub Actions workflow | P2 | Ripley |
+| 76 | Add Godot + export template caching to CI | P2 | Ripley |
+| 77 | Add PR artifact upload for Windows builds | P2 | Ripley |
+| 78 | Create copilot-instructions.md with GdUnit4Net testing guidelines | P3 | Ripley |
+| 79 | Document CI/CD pipeline and testing process | P3 | Dallas |
+| 80 | Add branch protection rules requiring CI to pass | P4 | Ripley |
+| 81 | Add mobile export presets (Android/iOS) | P5 | — |
+| 82 | Add automated release workflow on tag push | P5 | — |
+
+### Labels Created
+
+15 labels created with `--force` (idempotent): `devops`, `testing`, `ci-cd`, `documentation`, `dx`, `priority:high`, `priority:medium`, `future`, `epic`, `build`, `governance`, `squad`, `squad:ripley`, `squad:brett`, `squad:dallas`.
+
+### Notes
+
+- `gh` CLI v2.87.2 does not support `--add-sub-issue`, so sub-issues are linked via a task list in the Epic body.
+- P5 issues (#81, #82) have no squad assignment — they're future work.
+- Issue #80 (branch protection) requires Jose's admin access.
+
+### Consequence
+
+Epic and all sub-issues now trackable on GitHub. Squad members can filter issues by assignee label. Dependency graph visible in Epic task list. Team can begin implementation work.
+
+---
+
 ## GdUnit4Net as Testing Framework — 2026-03-14
 
 **Author:** Brett (QA/Test Engineer)  
