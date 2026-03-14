@@ -72,10 +72,10 @@ jobs:
             godot-${{ env.GODOT_VERSION }}-
 
       - name: Export Windows Build
-        uses: firebelley/godot-export@v6
+        uses: firebelley/godot-export@v7.0.0
         with:
           godot_executable_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_mono_linux_x86_64.zip
-          export_template_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_mono_export_templates.tpz
+          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_mono_export_templates.tpz
           relative_project_path: ./
           archive_output: false
           export_debug: false
@@ -87,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-build-${{ github.event.pull_request.number }}
-          # firebelley/godot-export@v6 respects the preset's export_path
+          # firebelley/godot-export@v7 respects the preset's export_path
           path: build/windows/
           retention-days: 14
           if-no-files-found: error
