@@ -232,3 +232,36 @@ Replace the entire GdUnit4 GDScript addon directory (`addons/gdUnit4/`) with v6.
 - The `continue-on-error` workaround on the export step may now be removable (test first)
 - 317 files changed — this is a vendor dependency update, not custom code
 - Future Godot version upgrades should include checking GdUnit4 compatibility
+
+---
+
+## Exclude Test Sources from ExportRelease Builds — 2026-03-14
+
+**Author:** Ripley (Tech Lead)  
+**Status:** Enacted  
+**Branch:** `fix/ci-windows-export`  
+**PR:** #96
+
+### Context
+
+The `GravityStellar.csproj` conditionally excludes test NuGet packages (GdUnit4, Microsoft.NET.Test.Sdk, etc.) from the `ExportRelease` configuration. However, test `.cs` files under `test/` were still included in compilation. When `dotnet publish -c ExportRelease` ran, it tried to compile test files that referenced GdUnit4 types — but the GdUnit4 package wasn't available, causing CS0246 errors.
+
+### Decision
+
+Add a conditional `<Compile Remove>` in the csproj to exclude test sources from ExportRelease:
+
+```xml
+<ItemGroup Condition="'$(Configuration)' == 'ExportRelease'">
+    <Compile Remove="test\**\*.cs" />
+</ItemGroup>
+```
+
+### Rationale
+
+Package exclusion and source exclusion must stay in sync. If a package is conditionally removed, any source files that depend on it must also be conditionally removed — otherwise the build breaks.
+
+### Consequences
+
+- ExportRelease builds no longer fail with missing type errors from test code
+- Test files are still compiled in Debug and other configurations (including `dotnet test`)
+- Future test files added under `test/` are automatically excluded from ExportRelease via the glob pattern
