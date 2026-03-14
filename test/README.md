@@ -10,7 +10,9 @@ This directory contains automated tests for Gravity Stellar using **GdUnit4Net**
 
 ## Test Conventions
 
-### Directory Structure
+### Recommended Directory Structure
+
+A typical layout is:
 
 ```
 test/
@@ -18,6 +20,10 @@ test/
 ├── integration/   # Integration tests (multi-component interactions)
 └── scenes/        # Test scenes (.tscn files for visual validation)
 ```
+
+> Note: These subdirectories are not created automatically. If you follow this layout,
+> create the directories under `test/` and add either real tests or a placeholder file
+> (for example, `.gitkeep`) so that Git will track them.
 
 ### Naming
 
