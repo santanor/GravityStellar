@@ -82,6 +82,8 @@ jobs:
           archive_output: false
           export_debug: false
           cache: true
+          use_preset_export_path: true
+          verbose: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -89,14 +91,18 @@ jobs:
         shell: bash
         run: |
           if [ ! -f "build/windows/GravityStellar.exe" ]; then
-            echo "ERROR: Export failed - GravityStellar.exe not found"
+            echo "ERROR: Export failed - GravityStellar.exe not found at build/windows/"
+            echo "Listing build/ contents for debugging:"
+            find build/ -type f 2>/dev/null || echo "build/ directory does not exist"
+            echo "Listing action build directory:"
+            find ${{ steps.export.outputs.build_directory }} -type f 2>/dev/null || echo "Action build directory empty or missing"
             exit 1
           fi
           if [ ! -f "build/windows/GravityStellar.pck" ]; then
             echo "ERROR: Export failed - GravityStellar.pck not found (embed_pck=false requires external PCK)"
             exit 1
           fi
-          echo "Export completed successfully (signal 11 crash on shutdown is expected)"
+          echo "Export completed successfully"
 
       - name: Upload Windows Build
         uses: actions/upload-artifact@v4
