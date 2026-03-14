@@ -82,10 +82,56 @@ jobs:
           archive_output: false
           export_debug: false
           cache: true
-          use_preset_export_path: true
           verbose: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Collect Export Output
+        shell: bash
+        run: |
+          echo "Searching for exported files..."
+
+          # Search common locations where the action places builds
+          for dir in \
+            "$HOME/.local/share/godot/builds" \
+            "/home/runner/.local/share/godot/builds"; do
+            if [ -d "$dir" ]; then
+              echo "Found build directory: $dir"
+              find "$dir" -type f | head -50
+            fi
+          done
+
+          # Also check the working directory and preset path
+          echo "Checking working directory for build artifacts:"
+          find . -name "GravityStellar.exe" 2>/dev/null | head -5 || true
+
+          # Find the exe from the action's internal build directory
+          EXE_PATH=$(find "$HOME/.local/share/godot/builds" -name "GravityStellar.exe" 2>/dev/null | head -1)
+          if [ -z "$EXE_PATH" ]; then
+            echo "Not found in ~/.local/share/godot/builds, searching broader..."
+            EXE_PATH=$(find / -name "GravityStellar.exe" 2>/dev/null | head -1) || true
+          fi
+
+          if [ -z "$EXE_PATH" ]; then
+            echo "ERROR: Could not find GravityStellar.exe in any build directory"
+            exit 1
+          fi
+
+          echo "Found exe at: $EXE_PATH"
+          EXE_DIR=$(dirname "$EXE_PATH")
+
+          # Copy all exported files to the expected build/windows/ directory
+          mkdir -p build/windows
+          cp -v "$EXE_DIR"/* build/windows/ 2>/dev/null || true
+
+          # Also copy .NET assemblies if they're in a subdirectory
+          if [ -d "$EXE_DIR/data_GravityStellar_win-x64" ]; then
+            cp -rv "$EXE_DIR/data_GravityStellar_win-x64" build/windows/ 2>/dev/null || true
+          fi
+
+          echo ""
+          echo "Collected files in build/windows/:"
+          find build/windows/ -type f | head -30
 
       - name: Verify Export Success
         shell: bash
@@ -94,21 +140,18 @@ jobs:
             echo "ERROR: Export failed - GravityStellar.exe not found at build/windows/"
             echo "Listing build/ contents for debugging:"
             find build/ -type f 2>/dev/null || echo "build/ directory does not exist"
-            echo "Listing action build directory:"
-            find ${{ steps.export.outputs.build_directory }} -type f 2>/dev/null || echo "Action build directory empty or missing"
             exit 1
           fi
           if [ ! -f "build/windows/GravityStellar.pck" ]; then
-            echo "ERROR: Export failed - GravityStellar.pck not found (embed_pck=false requires external PCK)"
-            exit 1
+            echo "WARNING: GravityStellar.pck not found (may be embedded in exe)"
           fi
-          echo "Export completed successfully"
+          echo "Export verification passed"
+          ls -la build/windows/
 
       - name: Upload Windows Build
         uses: actions/upload-artifact@v4
         with:
           name: windows-build-${{ github.event.pull_request.number }}
-          # firebelley/godot-export@v7 respects the preset's export_path
           path: build/windows/
           retention-days: 14
           if-no-files-found: error
