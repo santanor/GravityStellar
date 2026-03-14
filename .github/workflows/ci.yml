@@ -72,6 +72,8 @@ jobs:
             godot-${{ env.GODOT_VERSION }}-
 
       - name: Export Windows Build
+        id: export
+        continue-on-error: true
         uses: firebelley/godot-export@v7.0.0
         with:
           godot_executable_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_mono_linux_x86_64.zip
@@ -80,14 +82,98 @@ jobs:
           archive_output: false
           export_debug: false
           cache: true
+          verbose: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Collect Export Output
+        shell: bash
+        run: |
+          echo "=== Searching for exported files ==="
+
+          # Debug: show what's in godot's directories
+          echo "--- Godot directories ---"
+          ls -la "$HOME/.local/share/godot/" 2>/dev/null || echo "No ~/.local/share/godot/"
+          ls -la "$HOME/.local/share/godot/builds/" 2>/dev/null || echo "No builds/ directory"
+          ls -laR "$HOME/.local/share/godot/builds/" 2>/dev/null || echo "No builds/ contents"
+
+          # Debug: check the workspace too
+          echo "--- Workspace build directories ---"
+          ls -la build/ 2>/dev/null || echo "No build/ in workspace"
+          ls -laR build/ 2>/dev/null || echo "No build/ contents"
+
+          # Search for the exe in common locations
+          echo "--- Searching for GravityStellar.exe ---"
+          EXE_PATH=""
+          for search_dir in \
+            "$HOME/.local/share/godot/builds" \
+            "$HOME/.local/share/godot" \
+            "/tmp" \
+            "."; do
+            if [ -d "$search_dir" ]; then
+              FOUND=$(find "$search_dir" -name "GravityStellar.exe" -type f 2>/dev/null | head -1) || true
+              if [ -n "$FOUND" ]; then
+                EXE_PATH="$FOUND"
+                echo "Found exe at: $EXE_PATH"
+                break
+              fi
+            fi
+          done
+
+          # Broader search if still not found
+          if [ -z "$EXE_PATH" ]; then
+            echo "Not found in common locations, searching entire filesystem..."
+            EXE_PATH=$(find / -name "GravityStellar.exe" -type f 2>/dev/null | head -1) || true
+          fi
+
+          if [ -z "$EXE_PATH" ]; then
+            echo "ERROR: GravityStellar.exe not found anywhere on the filesystem"
+            echo "--- Full /home/runner/.local/share/godot/ tree ---"
+            find "$HOME/.local/share/godot/" -type f 2>/dev/null | head -100 || true
+            exit 1
+          fi
+
+          echo "Found exe at: $EXE_PATH"
+          EXE_DIR=$(dirname "$EXE_PATH")
+          echo "Export directory: $EXE_DIR"
+          echo "Contents:"
+          ls -la "$EXE_DIR/" 2>/dev/null || true
+
+          # Copy all exported files to build/windows/
+          mkdir -p build/windows
+          cp -v "$EXE_DIR"/* build/windows/ 2>/dev/null || true
+
+          # Copy .NET assemblies subdirectory if it exists
+          for subdir in "$EXE_DIR"/*/; do
+            if [ -d "$subdir" ]; then
+              cp -rv "$subdir" build/windows/ 2>/dev/null || true
+            fi
+          done
+
+          echo ""
+          echo "=== Collected files in build/windows/ ==="
+          ls -la build/windows/ 2>/dev/null || echo "build/windows/ is empty!"
+          find build/windows/ -type f 2>/dev/null | head -50 || true
+
+      - name: Verify Export Success
+        shell: bash
+        run: |
+          if [ ! -f "build/windows/GravityStellar.exe" ]; then
+            echo "ERROR: Export failed - GravityStellar.exe not found at build/windows/"
+            echo "Listing build/ contents for debugging:"
+            find build/ -type f 2>/dev/null || echo "build/ directory does not exist"
+            exit 1
+          fi
+          if [ ! -f "build/windows/GravityStellar.pck" ]; then
+            echo "WARNING: GravityStellar.pck not found (may be embedded in exe)"
+          fi
+          echo "Export verification passed"
+          ls -la build/windows/
 
       - name: Upload Windows Build
         uses: actions/upload-artifact@v4
         with:
           name: windows-build-${{ github.event.pull_request.number }}
-          # firebelley/godot-export@v7 respects the preset's export_path
           path: build/windows/
           retention-days: 14
           if-no-files-found: error

@@ -30,5 +30,6 @@
 - **Directory structure:** Created `docs/` and `docs/decisions/` directories for architecture documentation
 - **Epic Documentation** (2026-03-14): Orchestration complete. All ADRs merged to `.squad/decisions/decisions.md`, inbox files deleted. Ready for team review and PR submission.
 - **GitHub Epic #72 Created (2026-03-14):** Ripley created Epic #72 with 10 sub-issues (#73–#82) for AI Ops & DevOps. Dallas assigned to issue #79 (Document CI/CD pipeline and testing process). Epic linked via task list in body. Ready to begin documentation work.
+- **GitHub CLI Auth Skill (2026-03-14):** Created skill document for GH_TOKEN workaround. All agents must unset GH_TOKEN before gh write operations in Copilot sessions. Skill at `.squad/skills/github-cli-auth/SKILL.md`. Decision recorded in `.squad/decisions/inbox/dallas-github-cli-auth.md`.
 
 

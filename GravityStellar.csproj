@@ -10,4 +10,7 @@
     <PackageReference Include="gdUnit4.api" Version="5.0.0" />
     <PackageReference Include="gdUnit4.test.adapter" Version="3.0.0" />
   </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'ExportRelease'">
+    <Compile Remove="test\**\*.cs" />
+  </ItemGroup>
 </Project>
