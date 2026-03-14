@@ -89,49 +89,71 @@ jobs:
       - name: Collect Export Output
         shell: bash
         run: |
-          echo "Searching for exported files..."
+          echo "=== Searching for exported files ==="
 
-          # Search common locations where the action places builds
-          for dir in \
+          # Debug: show what's in godot's directories
+          echo "--- Godot directories ---"
+          ls -la "$HOME/.local/share/godot/" 2>/dev/null || echo "No ~/.local/share/godot/"
+          ls -la "$HOME/.local/share/godot/builds/" 2>/dev/null || echo "No builds/ directory"
+          ls -laR "$HOME/.local/share/godot/builds/" 2>/dev/null || echo "No builds/ contents"
+
+          # Debug: check the workspace too
+          echo "--- Workspace build directories ---"
+          ls -la build/ 2>/dev/null || echo "No build/ in workspace"
+          ls -laR build/ 2>/dev/null || echo "No build/ contents"
+
+          # Search for the exe in common locations
+          echo "--- Searching for GravityStellar.exe ---"
+          EXE_PATH=""
+          for search_dir in \
             "$HOME/.local/share/godot/builds" \
-            "/home/runner/.local/share/godot/builds"; do
-            if [ -d "$dir" ]; then
-              echo "Found build directory: $dir"
-              find "$dir" -type f | head -50
+            "$HOME/.local/share/godot" \
+            "/tmp" \
+            "."; do
+            if [ -d "$search_dir" ]; then
+              FOUND=$(find "$search_dir" -name "GravityStellar.exe" -type f 2>/dev/null | head -1) || true
+              if [ -n "$FOUND" ]; then
+                EXE_PATH="$FOUND"
+                echo "Found exe at: $EXE_PATH"
+                break
+              fi
             fi
           done
 
-          # Also check the working directory and preset path
-          echo "Checking working directory for build artifacts:"
-          find . -name "GravityStellar.exe" 2>/dev/null | head -5 || true
-
-          # Find the exe from the action's internal build directory
-          EXE_PATH=$(find "$HOME/.local/share/godot/builds" -name "GravityStellar.exe" 2>/dev/null | head -1)
+          # Broader search if still not found
           if [ -z "$EXE_PATH" ]; then
-            echo "Not found in ~/.local/share/godot/builds, searching broader..."
-            EXE_PATH=$(find / -name "GravityStellar.exe" 2>/dev/null | head -1) || true
+            echo "Not found in common locations, searching entire filesystem..."
+            EXE_PATH=$(find / -name "GravityStellar.exe" -type f 2>/dev/null | head -1) || true
           fi
 
           if [ -z "$EXE_PATH" ]; then
-            echo "ERROR: Could not find GravityStellar.exe in any build directory"
+            echo "ERROR: GravityStellar.exe not found anywhere on the filesystem"
+            echo "--- Full /home/runner/.local/share/godot/ tree ---"
+            find "$HOME/.local/share/godot/" -type f 2>/dev/null | head -100 || true
             exit 1
           fi
 
           echo "Found exe at: $EXE_PATH"
           EXE_DIR=$(dirname "$EXE_PATH")
+          echo "Export directory: $EXE_DIR"
+          echo "Contents:"
+          ls -la "$EXE_DIR/" 2>/dev/null || true
 
-          # Copy all exported files to the expected build/windows/ directory
+          # Copy all exported files to build/windows/
           mkdir -p build/windows
           cp -v "$EXE_DIR"/* build/windows/ 2>/dev/null || true
 
-          # Also copy .NET assemblies if they're in a subdirectory
-          if [ -d "$EXE_DIR/data_GravityStellar_win-x64" ]; then
-            cp -rv "$EXE_DIR/data_GravityStellar_win-x64" build/windows/ 2>/dev/null || true
-          fi
+          # Copy .NET assemblies subdirectory if it exists
+          for subdir in "$EXE_DIR"/*/; do
+            if [ -d "$subdir" ]; then
+              cp -rv "$subdir" build/windows/ 2>/dev/null || true
+            fi
+          done
 
           echo ""
-          echo "Collected files in build/windows/:"
-          find build/windows/ -type f | head -30
+          echo "=== Collected files in build/windows/ ==="
+          ls -la build/windows/ 2>/dev/null || echo "build/windows/ is empty!"
+          find build/windows/ -type f 2>/dev/null | head -50 || true
 
       - name: Verify Export Success
         shell: bash
