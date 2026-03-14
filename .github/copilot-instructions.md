@@ -107,3 +107,151 @@ Godot and export templates are cached to speed up builds.
 - Keep methods short and focused
 - Prefer explicit types for clarity in physics code
 - Use `readonly` and `const` where appropriate
+
+## PR Review Checklist and Guidelines
+
+### Core Rule
+
+**PRs must be small and atomic.**
+
+If a PR contains multiple concerns:
+
+* Request it be **split into smaller PRs**
+* Suggest **clear boundaries for the split**
+
+Acceptable PR scope:
+
+* One gameplay component
+* One class refactor
+* One bug fix
+* One debug feature
+* One small system
+
+Reject or split PRs that:
+
+* Add large gameplay systems
+* Mix refactors with features
+* Rewrite large scenes
+* Modify many unrelated files
+
+---
+
+### Godot Architecture
+
+Prefer:
+
+* Small scripts
+* Modular scenes
+* Signals for communication
+* Composition over inheritance
+* Clear node responsibilities
+
+Avoid:
+
+* Large monolithic scripts
+* Deep node hierarchies
+* Logic tightly coupled to visuals
+* Heavy work in `_Process()`
+
+Gameplay logic, physics, and visuals should remain **separate systems**.
+
+---
+
+### C# Code Quality
+
+Ensure code is **clean and idiomatic**.
+
+Prefer:
+
+* Clear naming
+* Small focused methods
+* Single responsibility classes
+* Readable control flow
+
+Avoid:
+
+* Clever abstractions
+* Large classes
+* Hidden side effects
+* Unnecessary complexity
+
+Favor **clarity over cleverness**.
+
+---
+
+### Physics & Simulation Safety
+
+The project includes **gravity simulation and orbital mechanics**.
+
+Check for:
+
+* Deterministic behavior where possible
+* Stable calculations
+* Avoiding expensive per-frame work
+* Safe handling of merged or dynamic bodies
+
+Flag **performance or stability risks**.
+
+---
+
+### Scene Structure
+
+When scenes change, ensure:
+
+* Logical node grouping
+* Reasonable depth
+* Clear naming
+
+Scenes must remain **readable and maintainable**.
+
+---
+
+### Documentation
+
+Significant changes should update `/docs`.
+
+Docs should briefly explain:
+
+* Why the change exists
+* What system it affects
+* How it interacts with other systems
+
+Keep documentation **short and practical**.
+
+---
+
+### Debug Tools
+
+Encourage **toggleable debug visualizations** when working on physics systems, such as:
+
+* Orbit paths
+* Gravity fields
+* Stability indicators
+
+---
+
+### Review Style
+
+Feedback must be:
+
+* Concise
+* Specific
+* Actionable
+
+Avoid vague comments.
+
+Prefer concrete suggestions and recommend **follow-up PRs** when appropriate.
+
+---
+
+### Approval Checklist
+
+Approve only if:
+
+* PR scope is small and focused
+* Architecture remains modular
+* Code follows Godot and C# best practices
+* No unnecessary complexity introduced
+* Documentation updated if needed
+
+If all conditions pass, the PR is acceptable.
