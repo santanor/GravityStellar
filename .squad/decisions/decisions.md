@@ -207,3 +207,28 @@ The MCP server injects a limited token into the environment. This token does not
 ### Consequence
 
 All agents can reliably perform GitHub write operations. This pattern applies to any tooling that depends on GitHub authentication within Copilot sessions.
+
+---
+
+## GdUnit4 GDScript Addon Update: v6.0.0 → v6.1.1 — 2026-03-14
+
+**Author:** Ripley (Tech Lead)  
+**Status:** Enacted  
+**Branch:** `fix/ci-windows-export`
+
+### Context
+
+The CI pipeline was crashing with signal 11 (SIGSEGV) during Godot export. Previous fixes addressed path mismatches and added `continue-on-error` as a workaround, but the **root cause** was the GdUnit4 GDScript addon (v6.0.0) being incompatible with Godot 4.6.
+
+Specifically, `addons/gdUnit4/src/core/GdUnitFileAccess.gd:199` called `file.get_as_text(true)`, but Godot 4.6 removed the `skip_cr` parameter from `FileAccess.get_as_text()`. This caused cascading GDScript compilation failures when Godot loaded, leading to the crash.
+
+### Decision
+
+Replace the entire GdUnit4 GDScript addon directory (`addons/gdUnit4/`) with v6.1.1, which has full Godot 4.6 compatibility. Downloaded from the official GitHub release (`MikeSchulze/gdUnit4` tag v6.1.1).
+
+### Consequence
+
+- CI export should no longer crash due to GDScript compilation errors
+- The `continue-on-error` workaround on the export step may now be removable (test first)
+- 317 files changed — this is a vendor dependency update, not custom code
+- Future Godot version upgrades should include checking GdUnit4 compatibility
