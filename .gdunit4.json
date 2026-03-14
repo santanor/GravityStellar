@@ -1,0 +1,11 @@
+{
+  "name": "GravityStellar Test Suite",
+  "version": "1.0.0",
+  "settings": {
+    "test_root": "test/",
+    "test_timeout": 30000,
+    "test_lookup_folder": "test/",
+    "report_push_errors": false,
+    "server_timeout": 30
+  }
+}

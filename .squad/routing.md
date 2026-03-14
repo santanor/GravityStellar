@@ -56,3 +56,4 @@ When triaging, Ripley should ask:
 5. **"Team, ..." → fan-out.** Spawn all relevant agents in parallel as `mode: "background"`.
 6. **Anticipate downstream work.** If a feature is being built, spawn the tester to write test cases from requirements simultaneously.
 7. **Issue-labeled work** — when a `squad:{member}` label is applied to an issue, route to that member. Ripley handles all `squad` (base label) triage.
+8. **No direct pushes to master.** Every agent must work on a branch (feature/*, squad/*) and open a PR. Never commit directly to master or main.

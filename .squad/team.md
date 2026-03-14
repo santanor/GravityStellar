@@ -37,3 +37,4 @@
 - Signals for decoupling
 - No god classes
 - Keep physics logic deterministic where possible
+- **Never push directly to master.** All changes go through feature branches and PRs. No exceptions without explicit owner approval.

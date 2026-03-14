@@ -1,6 +1,10 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Build output
+build/
+dist/
 # Squad: ignore runtime state (logs, inbox, sessions)
 .squad/orchestration-log/
 .squad/log/
