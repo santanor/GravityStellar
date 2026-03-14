@@ -92,6 +92,10 @@ jobs:
             echo "ERROR: Export failed - GravityStellar.exe not found"
             exit 1
           fi
+          if [ ! -f "build/windows/GravityStellar.pck" ]; then
+            echo "ERROR: Export failed - GravityStellar.pck not found (embed_pck=false requires external PCK)"
+            exit 1
+          fi
           echo "Export completed successfully (signal 11 crash on shutdown is expected)"
 
       - name: Upload Windows Build
