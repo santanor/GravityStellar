@@ -47,3 +47,9 @@
    - **Scribe:** Decision inbox merged: `lambert-epic1-complete.md` → `.squad/decisions.md` (approved status). Inbox file deleted.
    - **Scribe:** All squad files staged for commit.
    - **Status:** Epic 1 code-complete, ready for PR review chain. All 8 issues on branches. PRs #86–88 merged to master. Branches #63–67 await manual PR creation.
+- **TimeScale Multiplier (2026-03-15):**
+  - Added `TimeScale` export property to `SimulationConfig` (default 2.0, range 0.1–5.0 in editor).
+  - Wired into `SimulationManager._PhysicsProcess()`: effective `dt = FixedTimestep * clamp(TimeScale, 0.1, MaxSimulationSpeed)`.
+  - `MaxSimulationSpeed` (3.0) was already defined but unused — now serves as the upper clamp for `TimeScale`.
+  - This scales ALL physics uniformly (gravity, integration, collision timing) via a single global knob.
+  - Committed on `feature/demo-gravity-scene` branch. Build passes, 2 files changed (+3 lines).

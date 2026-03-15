@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="GravityStellar"
-run/main_scene="uid://chul14ubnraav"
+run/main_scene="uid://cvp8w3kf6j2an"
 config/features=PackedStringArray("4.6", "C#", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
 
 SimulationConfig="*res://Scripts/Physics/SimulationConfig.cs"
+SimulationManager="*res://Scripts/Physics/SimulationManager.cs"
 
 [dotnet]
 

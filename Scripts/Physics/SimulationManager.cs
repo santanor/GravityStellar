@@ -32,7 +32,8 @@ public partial class SimulationManager : Node
     {
         if (_registry.Count < 2) return;
 
-        float dt = _config.FixedTimestep;
+        float timeScale = Mathf.Clamp(_config.TimeScale, 0.1f, _config.MaxSimulationSpeed);
+        float dt = _config.FixedTimestep * timeScale;
 
         _integrator.Step(
             _registry.GetAll(), dt,
