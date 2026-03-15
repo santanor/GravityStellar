@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://cvp8w3kf6j2an"]
+[gd_scene format=3 uid="uid://cvp8w3kf6j2an"]
 
 [ext_resource type="Script" path="res://Scripts/Gameplay/DemoScene.cs" id="1"]
 [ext_resource type="Script" path="res://Scripts/Visual/PlanetSyncManager.cs" id="2"]
