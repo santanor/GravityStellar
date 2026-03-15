@@ -181,3 +181,35 @@ Reviews must be concise, constructive, and specific — no vague feedback.
 ### Rationale
 
 Codifies user expectations and team review standards. Enables consistent, high-quality PR reviews aligned with gravity-stellar's architecture and physics game requirements.
+
+---
+
+## Task Completion Requirements — 2026-03-15T15:14:11Z
+
+**Owner:** User directive (Jose)  
+**Source:** Copilot user input via Scribe agent  
+**Directive:** Never mark a task or issue as done that hasn't been PR'd
+
+### Details
+
+A task or issue must have a merged PR before it can be closed. This enforces traceability between work items and code changes.
+
+### Consequence
+
+All completed work is verifiable via commit history. Issue resolution directly tied to merged PRs prevents premature closure.
+
+---
+
+## Epic Completion Requirements — 2026-03-15T15:14:11Z
+
+**Owner:** User directive (Jose)  
+**Source:** Copilot user input via Scribe agent  
+**Directive:** Epics must not be marked as done until all sub-issues are completed and merged to master
+
+### Details
+
+An epic is only done when its full scope is in master. All sub-issues must be completed and their PRs merged before the epic itself can be marked complete.
+
+### Consequence
+
+Epic status accurately reflects scope completion. Prevents partially-complete epics from being closed. Maintains accuracy in project tracking and roadmaps.
