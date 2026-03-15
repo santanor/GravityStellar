@@ -6,6 +6,7 @@ public partial class PlanetVisual : Node2D
 {
     private Sprite2D _sprite;
     private CollisionShape2D _collisionShape;
+    private OrbitTrail _orbitTrail;
 
     public Planet BoundPlanet { get; private set; }
 
@@ -13,6 +14,7 @@ public partial class PlanetVisual : Node2D
     {
         _sprite = GetNode<Sprite2D>("Sprite2D");
         _collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
+        _orbitTrail = GetNodeOrNull<OrbitTrail>("OrbitTrail");
     }
 
     public void Bind(Planet planet)
@@ -32,5 +34,7 @@ public partial class PlanetVisual : Node2D
         Scale = new Vector2(scaleFactor, scaleFactor);
 
         Modulate = BoundPlanet.PlanetColor;
+
+        _orbitTrail?.RecordPosition(GlobalPosition);
     }
 }
