@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 [autoload]
 
 SimulationConfig="*res://Scripts/Physics/SimulationConfig.cs"
-SimulationManager="*res://Scripts/Physics/SimulationManager.cs"
 
 [dotnet]
 

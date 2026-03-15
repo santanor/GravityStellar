@@ -55,68 +55,31 @@
 
 **Purpose:** Captured for team memory and enforcement.
 
-### Godot Node Test Cleanup Pattern
+### CI Export Reliability Strategy
 
-**Author:** Brett (QA / Test Engineer)  
+**Author:** Ripley (Tech Lead)  
 **Date:** 2026-03-14  
-**Status:** Proposed
+**Status:** Enacted  
+**Branch:** `fix/ci-windows-export`
 
-**Context:** GdUnit4Net v5 does not provide `AutoFree` or `Memorypool` helpers for cleaning up Godot objects. Any test instantiating `Godot.Node` or `GodotObject` must manually free to avoid memory leaks.
+**Context:** The CI Windows export step was failing with signal 11 (SIGSEGV) during Godot shutdown. Investigation revealed two issues:
+1. **Path mismatch:** `export_presets.cfg` had `Build/GravityStellar.exe` but CI upload expected `build/windows/`. Linux filesystem is case-sensitive, so `Build/` ≠ `build/`.
+2. **Godot shutdown crash:** Godot 4.x on headless Linux runners consistently crashes with signal 11 during shutdown AFTER the export completes successfully. This is a known issue with Godot on CI runners, not an actual export failure.
 
 **Decision:**
-1. Call `.Free()` at end of each test method that creates a Node instance
-2. For multiple assertions, place `.Free()` after all assertions
-3. For setup/teardown, store node as field and free in `[AfterTest]`
-4. Pure C# data classes don't need this — only Godot-derived types
-
-**Example:**
-```csharp
-[TestCase]
-public void DefaultValues_AreCorrect()
-{
-    var config = new SimulationConfig();
-    AssertThat(config.GravitationalConstant).IsEqual(6.674f);
-    config.Free();
-}
-```
-
-**Rationale:** Prevents orphan Godot objects from accumulating during test runs, avoiding warnings or instability.
-
-### Epic 1 — Core Physics Simulation is Code-Complete
-
-**Author:** Lambert (Physics Programmer)
-**Date:** 2026-03-14
-**Status:** Approved
-
-**Context:** Epic 1 defined the foundational physics simulation layer for Gravity Stellar. It required 8 issues (#60–#67) covering project structure, configuration, data models, body management, gravity computation, collision detection, numerical integration, and the simulation loop.
-
-**Decision:** All 8 issues are now implemented with branches pushed to origin:
-
-| Issue | Branch | Component |
-|-------|--------|-----------|
-| #60 | `squad/60-folder-structure` | Project folder structure |
-| #61 | `squad/61-simulation-config` | SimulationConfig autoload |
-| #62 | `squad/62-celestial-body-data` | CelestialBodyData class |
-| #63 | `squad/63-body-registry` | BodyRegistry (O(1) lookup) |
-| #64 | `squad/64-gravity-calculator` | GravityCalculator (N-body) |
-| #65 | `squad/65-velocity-verlet` | VelocityVerletIntegrator |
-| #66 | `squad/66-simulation-manager` | SimulationManager (capstone) |
-| #67 | `squad/67-collision-detector` | CollisionDetector |
-
-**Architecture Summary:**
-- All physics classes except SimulationManager are pure C# — no Godot Node inheritance
-- SimulationManager is a Godot Node registered as autoload, wiring all components
-- Signal-based decoupling: BodyAdded, BodyRemoved, CollisionDetected
-- Velocity Verlet integration for symplectic, energy-conserving simulation
-- Forces use softening parameter to prevent singularities
-
-**Test Coverage:** ~31 GdUnit4 unit/integration tests across all physics components.
+1. Fix path consistency: Change export_path to `build/windows/GravityStellar.exe` to match CI upload expectations.
+2. Separate export success from process exit: Add `continue-on-error: true` to the export step, then add a verification step that checks if the exe exists. If the exe is present, the export succeeded despite the crash.
+3. Explicit failure on true errors: The verification step fails with a clear message if the exe is missing, distinguishing real failures from benign shutdown crashes.
 
 **Consequences:**
-- Epic 1 is ready for PR review and merge (stacked PR chain)
-- PRs #86–#88 merged; PRs for #63–#67 need manual creation
-- Epic 2 can begin planning (rendering, gameplay, UI layers)
-- The physics layer is fully decoupled and testable without Godot scene tree
+- CI builds will pass despite signal 11 crashes, as long as the export artifacts exist
+- Clear separation between "export succeeded" (files present) and "process exited cleanly" (exit code 0)
+- Future maintainers understand signal 11 is expected behavior, not a regression
+- If Godot fixes the shutdown crash in future versions, the continue-on-error can be removed
+
+**Files Changed:**
+- `export_presets.cfg` — export_path corrected
+- `.github/workflows/ci.yml` — continue-on-error + verification step added
 
 ## Governance
 

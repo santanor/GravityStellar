@@ -30,10 +30,6 @@
 - **Directory structure:** Created `docs/` and `docs/decisions/` directories for architecture documentation
 - **Epic Documentation** (2026-03-14): Orchestration complete. All ADRs merged to `.squad/decisions/decisions.md`, inbox files deleted. Ready for team review and PR submission.
 - **GitHub Epic #72 Created (2026-03-14):** Ripley created Epic #72 with 10 sub-issues (#73–#82) for AI Ops & DevOps. Dallas assigned to issue #79 (Document CI/CD pipeline and testing process). Epic linked via task list in body. Ready to begin documentation work.
-- **Epic 1 Batch 2 — Physics Architecture ADR (2026-03-14T22:15:00Z):**
-  - **Branch `squad/epic1-physics-adr`** (← master): Authored ADR-003 (Physics Architecture) documenting core physics design decisions, engine integration rationale, force calculation strategy (N-body with softening), collision handling approach, and performance considerations. ADR follows standard format (Status, Context, Decision, Consequences). Establishes reference for team and future implementations.
-  - **Coordination:** Dallas's ADR complements Lambert's 3 physics implementations (#63, #64, #67) and Brett's 18 validation tests. Architecture decision provides rationale for composition-based, stateless physics classes.
-  - **Documentation Consistency:** ADR references project architecture principles (small scripts, composition, signals, deterministic physics). Aligns with established Gravity Stellar design patterns.
-  - PR needs manual creation.
+- **GitHub CLI Auth Skill (2026-03-14):** Created skill document for GH_TOKEN workaround. All agents must unset GH_TOKEN before gh write operations in Copilot sessions. Skill at `.squad/skills/github-cli-auth/SKILL.md`. Decision recorded in `.squad/decisions/inbox/dallas-github-cli-auth.md`.
 
 
